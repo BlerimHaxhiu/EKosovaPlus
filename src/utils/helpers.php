@@ -6,6 +6,20 @@ function e(?string $value): string
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 
+function t(string $key): string
+{
+    global $lang;
+    if (isset($lang[$key]) && is_string($lang[$key])) {
+        return $lang[$key];
+    }
+
+    if (isset($lang['__legacy'][$key]) && is_string($lang['__legacy'][$key])) {
+        return $lang['__legacy'][$key];
+    }
+
+    return $key;
+}
+
 function redirect(string $page): never
 {
     header('Location: ' . BASE_URL . '/index.php?page=' . $page);
@@ -41,7 +55,7 @@ function verify_csrf(): void
 {
     $token = $_POST['csrf_token'] ?? '';
     if (!hash_equals($_SESSION['csrf_token'] ?? '', $token)) {
-        flash('Kerkesa nuk eshte valide. Provo perseri.', 'error');
+        flash(t('invalid_request'), 'error');
         redirect('login');
     }
 }
@@ -54,7 +68,7 @@ function current_user(): ?array
 function require_login(): void
 {
     if (!current_user()) {
-        flash('Ju lutem kyquni per te vazhduar.', 'error');
+        flash(t('login_required'), 'error');
         redirect('login');
     }
 }
@@ -63,7 +77,7 @@ function require_role(array $roles): void
 {
     require_login();
     if (!in_array(current_user()['role'], $roles, true)) {
-        flash('Nuk keni qasje ne kete faqe.', 'error');
+        flash(t('access_denied'), 'error');
         redirect('home');
     }
 }

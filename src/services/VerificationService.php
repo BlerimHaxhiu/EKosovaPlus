@@ -14,7 +14,7 @@ final class VerificationService
             $passed,
             'Statusi studentor',
             $isActiveStudent,
-            $isActiveStudent ? 'Student aktiv i verifikuar ne ' . ($student['academic_system'] ?? 'SEMS/SMU') : 'Nuk rezulton student aktiv'
+            $isActiveStudent ? 'Student aktiv i verifikuar' : 'Nuk rezulton student aktiv'
         );
 
         if ($scholarship['min_grade'] !== null) {
@@ -48,11 +48,12 @@ final class VerificationService
         }
 
         if (!empty($scholarship['required_social_status'])) {
+            $requiredStatus = $scholarship['required_social_status'];
             self::addCheck(
                 $checks,
                 $passed,
                 'Statusi social',
-                $student['social_status'] === $scholarship['required_social_status'],
+                self::hasSocialStatus($student, $requiredStatus),
                 'Statusi i studentit: ' . $student['social_status']
             );
         }
@@ -93,6 +94,16 @@ final class VerificationService
         if (!$result) {
             $passed = false;
         }
+    }
+
+    private static function hasSocialStatus(array $student, string $requiredStatus): bool
+    {
+        return match ($requiredStatus) {
+            'Femije veterani' => (int) ($student['is_veteran_child'] ?? 0) === 1,
+            'Jetim' => (int) ($student['is_orphan'] ?? 0) === 1,
+            'Ndihme sociale' => (int) ($student['receives_social_assistance'] ?? 0) === 1,
+            default => ($student['social_status'] ?? '') === $requiredStatus,
+        };
     }
 
     private static function institutionFor(string $name): string

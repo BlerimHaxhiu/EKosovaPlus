@@ -1,16 +1,26 @@
 <!doctype html>
-<html lang="sq">
+<html lang="<?= e(current_lang()) ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= APP_NAME ?></title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css?v=2">
 </head>
-<body>
+<body data-invalid-year-range="<?= e(t('invalid_year_range')) ?>">
 <header class="topbar">
     <div class="wrap topbar-inner">
-        <nav><a>Ndihme</a><a>FAQ</a><a>Vegzat</a><a>Webmail</a></nav>
-        <nav><span>Gjuha:</span><a>Shqi</a><a>Eng</a><a>Srb</a></nav>
+        <nav>
+            <a href="<?= BASE_URL ?>/index.php?page=help"><?= e(t('help')) ?></a>
+            <a class="placeholder" href="<?= BASE_URL ?>/index.php?page=home" data-placeholder="<?= e(t('faq_placeholder')) ?>"><?= e(t('faq')) ?></a>
+            <a class="placeholder" href="<?= BASE_URL ?>/index.php?page=home" data-placeholder="<?= e(t('links_placeholder')) ?>"><?= e(t('links')) ?></a>
+            <a class="placeholder" href="<?= BASE_URL ?>/index.php?page=home" data-placeholder="<?= e(t('webmail_placeholder')) ?>"><?= e(t('webmail')) ?></a>
+        </nav>
+        <nav class="language-switcher">
+            <span><?= e(t('language')) ?></span>
+            <a class="<?= current_lang() === 'sq' ? 'active' : '' ?>" href="<?= e(language_url('sq')) ?>">Shqi</a>
+            <a class="<?= current_lang() === 'en' ? 'active' : '' ?>" href="<?= e(language_url('en')) ?>">Eng</a>
+            <a class="<?= current_lang() === 'sr' ? 'active' : '' ?>" href="<?= e(language_url('sr')) ?>">Srb</a>
+        </nav>
     </div>
 </header>
 <header class="main-header">
@@ -27,29 +37,32 @@
             <span class="brand-text"><span>KOSOVA</span><strong>+</strong></span>
         </a>
         <nav class="main-nav" aria-label="Navigimi kryesor">
-            <a href="<?= BASE_URL ?>/index.php?page=home">Kryesore</a>
-            <a href="<?= BASE_URL ?>/index.php?page=services">Shërbime</a>
+            <a class="<?= ($page ?? '') === 'home' ? 'active' : '' ?>" href="<?= BASE_URL ?>/index.php?page=home"><?= e(t('home')) ?></a>
+            <a class="<?= in_array(($page ?? ''), ['services', 'education', 'scholarships'], true) ? 'active' : '' ?>" href="<?= BASE_URL ?>/index.php?page=services"><?= e(t('services')) ?></a>
             <?php if (($page ?? '') === 'education' || ($page ?? '') === 'scholarships'): ?>
-                <a href="<?= BASE_URL ?>/index.php?page=education">Arsimi</a>
+                <a class="<?= ($page ?? '') === 'education' ? 'active' : '' ?>" href="<?= BASE_URL ?>/index.php?page=education"><?= e(t('education')) ?></a>
             <?php endif; ?>
             <?php if (($page ?? '') === 'scholarships'): ?>
-                <a href="<?= BASE_URL ?>/index.php?page=scholarships">Bursat</a>
+                <a class="active" href="<?= BASE_URL ?>/index.php?page=scholarships"><?= e(t('scholarships')) ?></a>
             <?php else: ?>
-                <a href="<?= BASE_URL ?>/index.php?page=home">Informatat</a>
+                <a class="<?= ($page ?? '') === 'info' ? 'active' : '' ?>" href="<?= BASE_URL ?>/index.php?page=info"><?= e(t('information')) ?></a>
+            <?php endif; ?>
+            <?php if (($page ?? '') === 'help'): ?>
+                <a class="active" href="<?= BASE_URL ?>/index.php?page=help"><?= e(t('help')) ?></a>
             <?php endif; ?>
             <?php if (current_user()): ?>
-                <a class="notification-pill" href="<?= BASE_URL ?>/index.php?page=home" aria-label="Njoftimet"><span>🔔</span><b>0</b></a>
+                <a class="notification-pill" href="<?= BASE_URL ?>/index.php?page=home" aria-label="<?= e(t('notifications')) ?>"><span>🔔</span><b>0</b></a>
                 <div class="user-menu">
                     <button class="user-pill" type="button" id="userMenuButton" aria-expanded="false">
                         <span class="user-icon">♙</span><?= e(current_user()['name']) ?> <span>⌄</span>
                     </button>
                     <div class="user-dropdown" id="userDropdown">
-                        <a href="<?= BASE_URL ?>/index.php?page=profile">Te dhenat e mia</a>
-                        <a href="<?= BASE_URL ?>/index.php?page=dashboard">Paneli</a>
+                        <a href="<?= BASE_URL ?>/index.php?page=profile"><?= e(t('my_details')) ?></a>
+                        <a href="<?= BASE_URL ?>/index.php?page=dashboard"><?= e(t('dashboard')) ?></a>
                         <form method="post">
                             <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                             <input type="hidden" name="action" value="logout">
-                            <button>Dil</button>
+                            <button><?= e(t('logout')) ?></button>
                         </form>
                     </div>
                 </div>
