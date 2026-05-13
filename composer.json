@@ -1,0 +1,12 @@
+{
+    "name": "ekosovaplus/app",
+    "description": "EKosova+ academic PHP prototype",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "phpoffice/phpspreadsheet": "^1.29"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

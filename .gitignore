@@ -2,5 +2,6 @@
 Thumbs.db
 *.log
 storage/sessions/sess_*
+/vendor/
 /.idea/
 /.vscode/

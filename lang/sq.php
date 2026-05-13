@@ -123,7 +123,7 @@ return [
     'cancel' => 'Anulo',
     'edit' => 'Ndrysho',
     'delete' => 'Fshij',
-    'not_filled' => 'Nuk eshte plotesuar',
+    'not_filled' => 'Nuk është plotësuar',
     'none' => 'Nuk Ka',
     'successfully_saved' => 'Seksioni u ruajt.',
     'personal_saved' => 'Te dhenat personale u ruajten.',

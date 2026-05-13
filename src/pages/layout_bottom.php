@@ -30,6 +30,6 @@
         </div>
     </div>
 </footer>
-<script src="<?= BASE_URL ?>/assets/js/app.js?v=7"></script>
+<script src="<?= BASE_URL ?>/assets/js/app.js?v=8"></script>
 </body>
 </html>

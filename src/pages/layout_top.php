@@ -59,6 +59,9 @@
                     <div class="user-dropdown" id="userDropdown">
                         <a href="<?= BASE_URL ?>/index.php?page=profile"><?= e(t('my_details')) ?></a>
                         <a href="<?= BASE_URL ?>/index.php?page=dashboard"><?= e(t('dashboard')) ?></a>
+                        <?php if (current_user()['role'] === 'admin'): ?>
+                            <a href="<?= BASE_URL ?>/index.php?page=analytics">Analitika</a>
+                        <?php endif; ?>
                         <form method="post">
                             <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                             <input type="hidden" name="action" value="logout">
@@ -72,5 +75,5 @@
 </header>
 <main class="wrap content">
     <?php if (!empty($flash)): ?>
-        <div class="flash <?= e($flash['type']) ?>"><?= e($flash['message']) ?></div>
+        <div class="flash <?= e($flash['type']) ?>" <?= !empty($flash['popup']) ? 'data-popup-message="' . e($flash['message']) . '"' : '' ?>><?= e($flash['message']) ?></div>
     <?php endif; ?>

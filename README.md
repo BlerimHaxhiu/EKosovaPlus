@@ -13,7 +13,9 @@ Prototip akademik per lenden **Optimalizim**: modul i integrueshem ne stilin e E
 
 1. Krijo databazen duke importuar `ekosova.sql` ne phpMyAdmin.
 2. Kontrollo kredencialet ne `config/config.php`.
-3. Hape aplikacionin:
+3. Instalo paketat PHP:
+   `composer install`
+4. Hape aplikacionin:
    `http://localhost/Ekosovaplus/public/index.php`
 
 ## Llogari testuese

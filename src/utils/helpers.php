@@ -42,6 +42,11 @@ function flash(?string $message = null, string $type = 'success'): ?array
     return null;
 }
 
+function popup_flash(string $message, string $type = 'success'): void
+{
+    $_SESSION['flash'] = ['message' => $message, 'type' => $type, 'popup' => true];
+}
+
 function csrf_token(): string
 {
     if (empty($_SESSION['csrf_token'])) {
