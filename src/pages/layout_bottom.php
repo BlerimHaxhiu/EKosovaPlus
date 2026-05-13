@@ -3,7 +3,7 @@
     <div class="wrap footer-grid">
         <div class="footer-institutions">
             <div class="footer-logos">
-                <span class="kosovo-crest" aria-label="Republika e Kosovës"></span>
+                <span class="kosovo-crest" aria-label="Republika e Kosoves"></span>
                 <span class="ashi-logo" aria-label="ASHI"><i></i><strong>ASHI</strong></span>
             </div>
             <p><?= e(t('project_enabled_by')) ?></p>
@@ -30,6 +30,6 @@
         </div>
     </div>
 </footer>
-<script src="<?= BASE_URL ?>/assets/js/app.js?v=8"></script>
+<script src="<?= BASE_URL ?>/assets/js/app.js?v=9"></script>
 </body>
 </html>

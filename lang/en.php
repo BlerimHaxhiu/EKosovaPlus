@@ -168,7 +168,7 @@ return array_replace($sq, [
         'Vegzat' => 'Links',
         'Gjuha:' => 'Language:',
         'Kryesore' => 'Home',
-        'Shërbime' => 'Services',
+        'Sherbime' => 'Services',
         'Arsimi' => 'Education',
         'Bursat' => 'Scholarships',
         'Informata' => 'Information',

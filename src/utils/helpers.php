@@ -3,7 +3,32 @@ declare(strict_types=1);
 
 function e(?string $value): string
 {
-    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars(normalize_ui_text((string) $value), ENT_QUOTES, 'UTF-8');
+}
+
+function normalize_ui_text(string $value): string
+{
+    $lower = chr(0xC3) . chr(0xAB);
+    $upper = chr(0xC3) . chr(0x8B);
+    $brokenLower = chr(0xC3) . chr(0x83) . chr(0xC2) . chr(0xAB);
+    $brokenUpper = chr(0xC3) . chr(0x83) . chr(0xC2) . chr(0x8B);
+    $brokenUpperAlt = chr(0xC3) . chr(0x83) . chr(0xE2) . chr(0x82) . chr(0xAC) . chr(0xCB) . chr(0x9C);
+    $cLower = chr(0xC3) . chr(0xA7);
+    $cUpper = chr(0xC3) . chr(0x87);
+    $brokenCLower = chr(0xC3) . chr(0x83) . chr(0xC2) . chr(0xA7);
+    $brokenCUpper = chr(0xC3) . chr(0x83) . chr(0xC2) . chr(0x87);
+
+    return strtr($value, [
+        $brokenLower => 'e',
+        $brokenUpper => 'E',
+        $brokenUpperAlt => 'E',
+        $lower => 'e',
+        $upper => 'E',
+        $brokenCLower => 'c',
+        $brokenCUpper => 'C',
+        $cLower => 'c',
+        $cUpper => 'C',
+    ]);
 }
 
 function t(string $key): string

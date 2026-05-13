@@ -65,12 +65,16 @@ document.querySelectorAll('.scholarship-apply-form').forEach((form) => {
       modal.classList.add('is-visible');
       modal.setAttribute('aria-hidden', 'false');
     }
-    if (title) title.textContent = 'Duke verifikuar tÃ« dhÃ«nat e profilit tuaj...';
+    if (title) title.textContent = 'Duke verifikuar te dhenat e profilit tuaj...';
     if (text) text.textContent = form.dataset.scholarshipTitle || 'Ju lutemi prisni pak.';
 
     setTimeout(() => {
-      if (title) title.textContent = 'Urime! Ju keni fituar bursÃ«n.';
-      if (text) text.textContent = 'Raporti i aplikimit po pÃ«rgatitet.';
+      if (title) title.textContent = 'Urime! Ju keni fituar bursen.';
+      if (text) {
+        text.textContent = form.dataset.scholarshipAmount
+          ? `Shuma e fituar: ${form.dataset.scholarshipAmount}. Raporti i aplikimit po pergatitet.`
+          : 'Raporti i aplikimit po pergatitet.';
+      }
       setTimeout(() => {
         form.dataset.readyToSubmit = '1';
         form.submit();
@@ -217,7 +221,14 @@ document.querySelectorAll('.cancel-section-edit').forEach((button) => {
 const adminScholarshipForm = document.getElementById('adminScholarshipForm');
 
 if (adminScholarshipForm) {
-  const templates = JSON.parse(adminScholarshipForm.dataset.templates || '[]');
+  let templates = [];
+  try {
+    const parsedTemplates = JSON.parse(adminScholarshipForm.dataset.templates || '[]');
+    templates = Array.isArray(parsedTemplates) ? parsedTemplates : [];
+  } catch (error) {
+    const body = document.getElementById('templateDocumentsBody');
+    if (body) body.innerHTML = '<p class="muted-text">Nuk ka te dhena.</p>';
+  }
   const categorySelect = document.getElementById('scholarshipCategory');
   const templateProviderSelect = document.getElementById('templateProviderSelect');
   const templateProviderWrap = document.getElementById('templateProviderWrap');
@@ -228,6 +239,7 @@ if (adminScholarshipForm) {
   const providerNameInput = document.getElementById('scholarshipProviderName');
   const templateIdInput = document.getElementById('scholarshipTemplateId');
   const loadTemplateButton = document.getElementById('loadScholarshipTemplate');
+  const scholarshipAmountInput = document.getElementById('scholarshipAmount');
   const providerAliases = {
     'Universiteti i Prishtines': 'Universiteti Hasan Prishtina',
   };
@@ -272,6 +284,100 @@ if (adminScholarshipForm) {
     providerNameInput.value = providerName;
   }
 
+  function normalizeText(value) {
+    return String(value || '')
+      .trim()
+      .toLowerCase()
+      .replaceAll('e', 'e')
+      .replaceAll('\u00c3\u00a7', 'c')
+      .replaceAll('e', 'e')
+      .replaceAll('ç', 'c');
+  }
+
+  function documentSectionKey(section) {
+    const text = normalizeText(section);
+    if (text === 'id_card' || text.includes('idcard')) return 'id_card';
+    if (text.includes('leternjoftimi') || text.includes('id /')) return 'id_card';
+    if (text.includes('studentit aktiv')) return 'student_active';
+    if (text.includes('notave')) return 'grade_certificate';
+    if (text.includes('vendbanimit')) return 'residence_certificate';
+    if (text.includes('bashkesise familjare') || text.includes('studenteve ne familje')) return 'family_declaration';
+    if (text.includes('ndihm') && text.includes('sociale')) return 'social_assistance';
+    if (text.includes('kategori') && text.includes('luft')) return 'war_category';
+    if (text.includes('vdekjes') && text.includes('prind')) return 'parent_death';
+    if (text.includes('nevoja') && text.includes('vecanta')) return 'special_needs';
+    if (text.includes('drejtime deficitare') || text.includes('drejtim deficitar')) return 'deficit_program';
+    if (text.includes('administrata tatimore') || text.includes('atk')) return 'tax_confirmation';
+    if (text.includes('bankar')) return 'bank_confirmation';
+    if (text.includes('regjistri i bursave')) return 'scholarship_registry';
+    return text.replace(/[^a-z0-9]+/g, '');
+  }
+
+  function documentSectionKeyForRule(rule) {
+    const key = String(rule?.rule_key || '');
+    const mapped = {
+      id_card_completed: 'id_card',
+      student_active: 'student_active',
+      full_time: 'student_active',
+      repeating_year: 'student_active',
+      study_level: 'student_active',
+      study_year: 'student_active',
+      university: 'student_active',
+      faculty: 'student_active',
+      public_university: 'student_active',
+      public_university_after_first_year: 'student_active',
+      first_year_university: 'student_active',
+      correspondence: 'student_active',
+      self_financing: 'student_active',
+      is_final_year: 'student_active',
+      average_grade: 'grade_certificate',
+      previous_year_exams_completed: 'grade_certificate',
+      september_exams_completed: 'grade_certificate',
+      residence_municipality: 'residence_certificate',
+      city: 'residence_certificate',
+      bank_confirmed: 'bank_confirmation',
+      bank_completed: 'bank_confirmation',
+      war_category: 'war_category',
+      veteran_child: 'war_category',
+      is_veteran_child: 'war_category',
+      martyr_child: 'war_category',
+      receives_social_assistance: 'social_assistance',
+      social_assistance: 'social_assistance',
+      one_parent_missing: 'parent_death',
+      two_parents_missing: 'parent_death',
+      missing_one_parent: 'parent_death',
+      missing_both_parents: 'parent_death',
+      special_needs: 'special_needs',
+      family_students_count: 'family_declaration',
+      student_employed: 'tax_confirmation',
+      active_worker: 'tax_confirmation',
+    };
+    return mapped[key] || documentSectionKey(rule?.display_info?.document_section || '');
+  }
+
+  function canonicalDocumentSectionName(key, fallback = '') {
+    return {
+      id_card: 'ID / Leternjoftimi',
+      student_active: 'Vertetimi i Studentit Aktiv',
+      grade_certificate: 'Certifikata e Notave',
+      residence_certificate: 'Certifikata e Vendbanimit',
+      bank_confirmation: 'Konfirmimi Bankar',
+      war_category: 'Vertetimi per Kategori te Luftes',
+      social_assistance: 'Vertetimi per Ndihme Sociale',
+      parent_death: 'Certifikata e Vdekjes se Prinderve',
+      special_needs: 'Vertetimi per Nevoja te Vecanta',
+      family_declaration: 'Deklarata e Bashkesise Familjare',
+      tax_confirmation: 'Vertetimi nga Administrata Tatimore e Kosoves',
+      deficit_program: 'Deshmi per Drejtime Deficitare',
+      scholarship_registry: 'Regjistri i Bursave',
+    }[key] || fallback;
+  }
+
+  function hasVariableAmount(template) {
+    return normalizeText(template?.category).includes('burse komunale')
+      && normalizeText(template?.provider_name).includes('komuna e kamenic');
+  }
+
   function inputCell(name, value, type = 'text') {
     return `<input name="${name}" type="${type}" value="${escapeHtml(value ?? '')}">`;
   }
@@ -285,19 +391,19 @@ if (adminScholarshipForm) {
     const base = rule.description || info.human_description || info.label || rule.rule_key;
     const value = String(rule.rule_value || '').trim();
     const op = String(rule.operator || '').trim();
-    if (rule.rule_key === 'residence_municipality' && value) return `Studenti duhet tÃ« jetÃ« banor i KomunÃ«s sÃ« ${value}.`;
-    if (rule.rule_key === 'full_time') return 'Studenti duhet tÃ« jetÃ« student i rregullt.';
-    if (rule.rule_key === 'student_active') return 'Studenti duhet tÃ« jetÃ« student aktiv.';
-    if (rule.rule_key === 'repeating_year' && value === 'jo') return 'Studenti nuk duhet tÃ« jetÃ« pÃ«rsÃ«ritÃ«s i vitit.';
-    if (rule.rule_key === 'study_level' && op === '!=') return `Niveli i studimeve nuk duhet tÃ« jetÃ« ${value}.`;
+    if (rule.rule_key === 'residence_municipality' && value) return `Studenti duhet te jete banor i Komunes se ${value}.`;
+    if (rule.rule_key === 'full_time') return 'Studenti duhet te jete student i rregullt.';
+    if (rule.rule_key === 'student_active') return 'Studenti duhet te jete student aktiv.';
+    if (rule.rule_key === 'repeating_year' && value === 'jo') return 'Studenti nuk duhet te jete perserites i vitit.';
+    if (rule.rule_key === 'study_level' && op === '!=') return `Niveli i studimeve nuk duhet te jete ${value}.`;
     if (rule.rule_key === 'average_grade' && op === 'between') return `Nota mesatare ${value.replace('-', ' deri ')}.`;
-    if (rule.rule_key === 'average_grade' && op === '>=') return `Nota mesatare duhet tÃ« jetÃ« sÃ« paku ${value}.`;
-    if (rule.rule_key === 'first_year_university') return `PÃ«r vitin e parÃ«, universiteti duhet tÃ« jetÃ« ${value}.`;
-    if (rule.rule_key === 'public_university_after_first_year') return 'PÃ«r vitin e dytÃ« e tutje, universiteti duhet tÃ« jetÃ« publik.';
-    if (rule.rule_key === 'family_students_count') return 'Dy ose mÃ« shumÃ« studentÃ« nÃ« familje.';
-    if (['receives_social_assistance', 'social_assistance'].includes(rule.rule_key)) return 'Studenti Ã«shtÃ« pÃ«rfitues i ndihmÃ«s sociale.';
-    if (['two_parents_missing', 'missing_both_parents'].includes(rule.rule_key)) return 'Studenti Ã«shtÃ« pa dy prindÃ«r.';
-    if (['one_parent_missing', 'missing_one_parent'].includes(rule.rule_key)) return 'Studenti Ã«shtÃ« pa njÃ«rin prind.';
+    if (rule.rule_key === 'average_grade' && op === '>=') return `Nota mesatare duhet te jete se paku ${value}.`;
+    if (rule.rule_key === 'first_year_university') return `Per vitin e pare, universiteti duhet te jete ${value}.`;
+    if (rule.rule_key === 'public_university_after_first_year') return 'Per vitin e dyte e tutje, universiteti duhet te jete publik.';
+    if (rule.rule_key === 'family_students_count') return 'Dy ose me shume studente ne familje.';
+    if (['receives_social_assistance', 'social_assistance'].includes(rule.rule_key)) return 'Studenti eshte perfitues i ndihmes sociale.';
+    if (['two_parents_missing', 'missing_both_parents'].includes(rule.rule_key)) return 'Studenti eshte pa dy prinder.';
+    if (['one_parent_missing', 'missing_one_parent'].includes(rule.rule_key)) return 'Studenti eshte pa njerin prind.';
     if (['war_category', 'is_veteran_child', 'veteran_child', 'martyr_child'].includes(rule.rule_key)) return base.replace(/\.$/, '') + '.';
     return base.replace(/\.$/, '') + '.';
   }
@@ -334,7 +440,7 @@ if (adminScholarshipForm) {
           <h4>${escapeHtml(group.section)}</h4>
           <div class="template-rule-badges">
             <span class="badge ${ruleStatusClass(statusValue)}" id="${previewId}">${ruleStatusLabel(statusValue)}</span>
-            <span class="badge muted">${totalOptionalPoints > 0 ? `Deri nÃ« ${totalOptionalPoints} pikÃ«` : 'PikÃ«t: nuk aplikohet'}</span>
+            <span class="badge muted">${totalOptionalPoints > 0 ? `Deri ne ${totalOptionalPoints} pike` : 'Piket: nuk aplikohet'}</span>
           </div>
           <label class="document-status-control">Ndrysho statusin e ketij dokumenti
             <select class="rule-status-select" data-rule-indexes="${escapeHtml(ruleIndexes)}" data-preview-target="${previewId}">
@@ -351,8 +457,8 @@ if (adminScholarshipForm) {
           </div>` : ''}
         ${hasOptional ? `
           <div class="template-rule-section">
-            <strong>Kriteret opsionale / pikÃ«zuese</strong>
-            <ul>${group.optional.map(({ rule }) => `<li>${escapeHtml(ruleDisplayText(rule))}${Number(rule.points || 0) > 0 ? ` = ${Number(rule.points || 0)} pikÃ«` : ''}</li>`).join('')}</ul>
+            <strong>Kriteret opsionale / pikezuese</strong>
+            <ul>${group.optional.map(({ rule }) => `<li>${escapeHtml(ruleDisplayText(rule))}${Number(rule.points || 0) > 0 ? ` = ${Number(rule.points || 0)} pike` : ''}</li>`).join('')}</ul>
           </div>` : ''}
         ${[...group.required, ...group.optional].map(({ rule, index }) => `
           ${hiddenInput(`rules[${index}][rule_key]`, rule.rule_key)}
@@ -383,27 +489,70 @@ if (adminScholarshipForm) {
 
   function renderDocumentRows(documents, rules = []) {
     const body = document.getElementById('templateDocumentsBody');
+    documents = Array.isArray(documents) ? documents : [];
+    rules = Array.isArray(rules) ? rules : [];
     body.innerHTML = '';
-    const normalizedDocuments = [...documents];
-    const existingSections = new Set(normalizedDocuments.map((item) => item.document_section_name));
+    const documentSections = new Map();
 
-    rules.forEach((rule) => {
-      const section = rule.display_info?.document_section;
-      if (!section || existingSections.has(section)) return;
-      existingSections.add(section);
-      normalizedDocuments.push({
-        document_section_name: section,
-        is_required: Number(rule.is_required) === 1 ? 1 : 0,
-        is_optional_bonus: Number(rule.is_required) === 1 ? 0 : 1,
-        description: documentUseText(section),
+    function addDocument(documentItem) {
+      const sectionName = documentItem?.document_section_name || '';
+      const sectionKey = documentSectionKey(sectionName);
+      if (!sectionKey) return;
+
+      if (documentSections.has(sectionKey)) {
+        const existing = documentSections.get(sectionKey);
+        existing.is_required = Number(existing.is_required) === 1 || Number(documentItem.is_required) === 1 ? 1 : 0;
+        existing.is_optional_bonus = Number(existing.is_optional_bonus) === 1 || Number(documentItem.is_optional_bonus) === 1 ? 1 : 0;
+        if (!existing.description && documentItem.description) existing.description = documentItem.description;
+        return;
+      }
+
+      documentSections.set(sectionKey, {
+        ...documentItem,
+        document_section_name: canonicalDocumentSectionName(sectionKey, sectionName),
+        requiredRules: [],
+        optionalRules: [],
       });
-    });
+    }
 
-    normalizedDocuments.forEach((documentItem, index) => {
+    function addRule(rule) {
+      const sectionKey = documentSectionKeyForRule(rule);
+      if (!sectionKey) return;
+      if (!documentSections.has(sectionKey)) {
+        const sectionName = canonicalDocumentSectionName(sectionKey, rule.display_info?.document_section || '');
+        addDocument({
+          document_section_name: sectionName,
+          is_required: Number(rule.is_required) === 1 ? 1 : 0,
+          is_optional_bonus: Number(rule.is_required) === 1 ? 0 : 1,
+          description: documentUseText(sectionName),
+        });
+      }
+
+      const section = documentSections.get(sectionKey);
+      const target = Number(rule.is_required) === 1 ? section.requiredRules : section.optionalRules;
+      const ruleText = ruleDisplayText(rule);
+      if (!target.some((item) => item.text === ruleText)) {
+        target.push({ rule, text: ruleText });
+      }
+      section.is_required = Number(section.is_required) === 1 || Number(rule.is_required) === 1 ? 1 : 0;
+      section.is_optional_bonus = Number(section.is_optional_bonus) === 1 || Number(rule.is_required) !== 1 ? 1 : 0;
+    }
+
+    documents.forEach(addDocument);
+    rules.forEach(addRule);
+
+    if (documentSections.size === 0) {
+      body.innerHTML = '<p class="muted-text">Nuk ka te dhena.</p>';
+      return;
+    }
+
+    Array.from(documentSections.values()).forEach((documentItem, index) => {
       const sectionName = documentItem.document_section_name || '';
       const isRequired = Number(documentItem.is_required) === 1;
       const isBonus = Number(documentItem.is_optional_bonus) === 1;
       const statusValue = isRequired ? 'required' : (isBonus ? 'bonus' : 'optional');
+      const requiredRules = documentItem.requiredRules || [];
+      const optionalRules = documentItem.optionalRules || [];
       const card = document.createElement('article');
       card.className = 'template-document-card';
       card.innerHTML = `
@@ -411,11 +560,21 @@ if (adminScholarshipForm) {
         <label class="document-status-control">Statusi
           <select class="document-status-select" data-required-target="documentRequired${index}" data-bonus-target="documentBonus${index}">
             <option value="required" ${statusValue === 'required' ? 'selected' : ''}>Obligativ</option>
-            <option value="bonus" ${statusValue === 'bonus' ? 'selected' : ''}>Opsional / PikÃ«zues</option>
+            <option value="bonus" ${statusValue === 'bonus' ? 'selected' : ''}>Opsional / Pikezues</option>
             <option value="optional" ${statusValue === 'optional' ? 'selected' : ''}>Opsional</option>
           </select>
         </label>
         <p>${escapeHtml(documentItem.description || documentUseText(sectionName))}</p>
+        ${requiredRules.length ? `
+          <div class="template-rule-section">
+            <strong>Kriteret obligative</strong>
+            <ul>${requiredRules.map(({ text }) => `<li>${escapeHtml(text)}</li>`).join('')}</ul>
+          </div>` : ''}
+        ${optionalRules.length ? `
+          <div class="template-rule-section">
+            <strong>Kriteret opsionale / pikezuese</strong>
+            <ul>${optionalRules.map(({ rule, text }) => `<li>${escapeHtml(text)}${Number(rule.points || 0) > 0 ? ` = ${Number(rule.points || 0)} pike` : ''}</li>`).join('')}</ul>
+          </div>` : ''}
         ${hiddenInput(`documents[${index}][document_section_name]`, sectionName)}
         <input type="hidden" id="documentRequired${index}" name="documents[${index}][is_required]" value="${isRequired ? '1' : '0'}">
         <input type="hidden" id="documentBonus${index}" name="documents[${index}][is_optional_bonus]" value="${!isRequired && isBonus ? '1' : '0'}">
@@ -465,17 +624,17 @@ if (adminScholarshipForm) {
   }
   function documentUseText(section) {
     const map = {
-      'ID / Leternjoftimi': 'PÃ«rdoret pÃ«r identifikimin e studentit.',
-      'ID / LetÃ«rnjoftimi': 'PÃ«rdoret pÃ«r identifikimin e studentit.',
-      'Vertetimi i Studentit Aktiv': 'PÃ«rdoret pÃ«r universitetin, nivelin, vitin e studimit dhe statusin aktiv.',
-      'VÃ«rtetimi i Studentit Aktiv': 'PÃ«rdoret pÃ«r universitetin, nivelin, vitin e studimit dhe statusin aktiv.',
-      'Certifikata e Notave': 'PÃ«rdoret pÃ«r notÃ«n mesatare dhe provimet.',
-      'Certifikata e Vendbanimit': 'PÃ«rdoret pÃ«r komunÃ«n e vendbanimit.',
-      'Konfirmimi Bankar': 'PÃ«rdoret pÃ«r pagesÃ«n e bursÃ«s.',
-      'Vertetimi per Kategori te Luftes': 'PÃ«rdoret pÃ«r pikÃ« shtesÃ«.',
-      'VÃ«rtetimi pÃ«r Kategori tÃ« LuftÃ«s': 'PÃ«rdoret pÃ«r pikÃ« shtesÃ«.',
+      'ID / Leternjoftimi': 'Perdoret per identifikimin e studentit.',
+      'ID / Leternjoftimi': 'Perdoret per identifikimin e studentit.',
+      'Vertetimi i Studentit Aktiv': 'Perdoret per universitetin, nivelin, vitin e studimit dhe statusin aktiv.',
+      'Vertetimi i Studentit Aktiv': 'Perdoret per universitetin, nivelin, vitin e studimit dhe statusin aktiv.',
+      'Certifikata e Notave': 'Perdoret per noten mesatare dhe provimet.',
+      'Certifikata e Vendbanimit': 'Perdoret per komunen e vendbanimit.',
+      'Konfirmimi Bankar': 'Perdoret per pagesen e burses.',
+      'Vertetimi per Kategori te Luftes': 'Perdoret per pike shtese.',
+      'Vertetimi per Kategori te Luftes': 'Perdoret per pike shtese.',
     };
-    return map[section] || 'PÃ«rdoret si seksion i profilit nÃ« vend tÃ« dokumentit fizik/PDF.';
+    return map[section] || 'Perdoret si seksion i profilit ne vend te dokumentit fizik/PDF.';
   }
 
   function syncLegacyFields(rules) {
@@ -511,6 +670,9 @@ if (adminScholarshipForm) {
     document.getElementById('scholarshipDescription').value = template.description || '';
     document.getElementById('scholarshipStartDate').value = template.start_date || '';
     document.getElementById('scholarshipEndDate').value = template.end_date || '';
+    if (scholarshipAmountInput) {
+      scholarshipAmountInput.value = hasVariableAmount(template) ? 'varet nga piket' : '500';
+    }
     renderRuleRows(template.rules || []);
     renderDocumentRows(template.documents || [], template.rules || []);
     syncLegacyFields(template.rules || []);

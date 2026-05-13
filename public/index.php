@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
 $sessionPath = dirname(__DIR__) . '/storage/sessions';
 if (!is_dir($sessionPath)) {
     mkdir($sessionPath, 0775, true);
@@ -41,6 +44,7 @@ function handle_action(string $action): void
         'admin_save_user' => action_admin_save_user(),
         'admin_delete_user' => action_admin_delete_user(),
         'admin_update_complaint' => action_admin_update_complaint(),
+        'admin_delete_application' => action_admin_delete_application(),
         default => redirect('home'),
     };
 }
@@ -90,25 +94,25 @@ function translate_output(string $html): string
 {
     $current = current_lang();
     if ($current === 'sq') {
-        return $html;
+        return normalize_ui_text($html);
     }
 
     $translations = array_replace(translations_for($current), $GLOBALS['lang']['__legacy'] ?? []);
     uksort($translations, fn($a, $b) => strlen($b) <=> strlen($a));
-    return strtr($html, $translations);
+    return normalize_ui_text(strtr($html, $translations));
 }
 
 function translations_for(string $lang): array
 {
     $en = [
         'Ndihme' => 'Help',
-        'Ndihmë' => 'Help',
+        'Ndihme' => 'Help',
         'Vegzat' => 'Links',
         'Gjuha:' => 'Language:',
         'Shqi' => 'Alb',
         'Kryesore' => 'Home',
-        'Shërbime' => 'Services',
-        'ShÃ«rbime' => 'Services',
+        'Sherbime' => 'Services',
+        'Sherbime' => 'Services',
         'Arsimi' => 'Education',
         'Bursat' => 'Scholarships',
         'Informata' => 'Information',
@@ -116,60 +120,60 @@ function translations_for(string $lang): array
         'Te dhenat e mia' => 'My details',
         'Paneli' => 'Dashboard',
         'Dil' => 'Log out',
-        'Platforma e shërbimeve online' => 'Online services platform',
-        'Platforma e shÃ«rbimeve online' => 'Online services platform',
-        'eKosova është platformë shtetërore ku shërbimet publike që gjenden në zyrat dhe sportelet fizike të institucioneve ofrohen në mënyrë elektronike.' => 'eKosova is a state platform where public services available at physical offices and counters of institutions are offered electronically.',
-        'eKosova Ã«shtÃ« platformÃ« shtetÃ«rore ku shÃ«rbimet publike qÃ« gjenden nÃ« zyrat dhe sportelet fizike tÃ« institucioneve ofrohen nÃ« mÃ«nyrÃ« elektronike.' => 'eKosova is a state platform where public services available at physical offices and counters of institutions are offered electronically.',
+        'Platforma e sherbimeve online' => 'Online services platform',
+        'Platforma e sherbimeve online' => 'Online services platform',
+        'eKosova eshte platforme shteterore ku sherbimet publike qe gjenden ne zyrat dhe sportelet fizike te institucioneve ofrohen ne menyre elektronike.' => 'eKosova is a state platform where public services available at physical offices and counters of institutions are offered electronically.',
+        'eKosova eshte platforme shteterore ku sherbimet publike qe gjenden ne zyrat dhe sportelet fizike te institucioneve ofrohen ne menyre elektronike.' => 'eKosova is a state platform where public services available at physical offices and counters of institutions are offered electronically.',
         'Regjistrohu' => 'Register',
         'Hyr' => 'Log in',
-        'Kërko shërbimin' => 'Search service',
-        'KÃ«rko shÃ«rbimin' => 'Search service',
-        'Shiko video udhëzuesit' => 'View video guides',
-        'Shiko video udhÃ«zuesit' => 'View video guides',
-        'Video udhëzuesit janë placeholder në këtë prototip.' => 'Video guides are placeholders in this prototype.',
-        'Video udhÃ«zuesit janÃ« placeholder nÃ« kÃ«tÃ« prototip.' => 'Video guides are placeholders in this prototype.',
-        'Vëmendje' => 'Attention',
-        'VÃ«mendje' => 'Attention',
-        'Ju lutem të keni parasysh që platforma eKosova mund të hapet vetëm përmes adresës zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.' => 'Please note that the eKosova platform can only be accessed through the official address https://ekosova.rks-gov.net and https://rks-gov.net.',
-        'Ju lutem tÃ« keni parasysh qÃ« platforma eKosova mund tÃ« hapet vetÃ«m pÃ«rmes adresÃ«s zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.' => 'Please note that the eKosova platform can only be accessed through the official address https://ekosova.rks-gov.net and https://rks-gov.net.',
-        'Çdo adresë, vegëz apo URL tjetër që nuk përfundon me rks-gov.net nuk i përket platformës eKosova dhe si e tillë nuk janë shërbime që ofrohen nga platforma shtetërore.' => 'Any other address, link, or URL that does not end with rks-gov.net does not belong to the eKosova platform and is not a service offered by the state platform.',
-        'Ã‡do adresÃ«, vegÃ«z apo URL tjetÃ«r qÃ« nuk pÃ«rfundon me rks-gov.net nuk i pÃ«rket platformÃ«s eKosova dhe si e tillÃ« nuk janÃ« shÃ«rbime qÃ« ofrohen nga platforma shtetÃ«rore.' => 'Any other address, link, or URL that does not end with rks-gov.net does not belong to the eKosova platform and is not a service offered by the state platform.',
+        'Kerko sherbimin' => 'Search service',
+        'Kerko sherbimin' => 'Search service',
+        'Shiko video udhezuesit' => 'View video guides',
+        'Shiko video udhezuesit' => 'View video guides',
+        'Video udhezuesit jane placeholder ne kete prototip.' => 'Video guides are placeholders in this prototype.',
+        'Video udhezuesit jane placeholder ne kete prototip.' => 'Video guides are placeholders in this prototype.',
+        'Vemendje' => 'Attention',
+        'Vemendje' => 'Attention',
+        'Ju lutem te keni parasysh qe platforma eKosova mund te hapet vetem permes adreses zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.' => 'Please note that the eKosova platform can only be accessed through the official address https://ekosova.rks-gov.net and https://rks-gov.net.',
+        'Ju lutem te keni parasysh qe platforma eKosova mund te hapet vetem permes adreses zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.' => 'Please note that the eKosova platform can only be accessed through the official address https://ekosova.rks-gov.net and https://rks-gov.net.',
+        'Ãƒâ€¡do adrese, vegez apo URL tjeter qe nuk perfundon me rks-gov.net nuk i perket platformes eKosova dhe si e tille nuk jane sherbime qe ofrohen nga platforma shteterore.' => 'Any other address, link, or URL that does not end with rks-gov.net does not belong to the eKosova platform and is not a service offered by the state platform.',
+        'Cdo adrese, vegez apo URL tjeter qe nuk perfundon me rks-gov.net nuk i perket platformes eKosova dhe si e tille nuk jane sherbime qe ofrohen nga platforma shteterore.' => 'Any other address, link, or URL that does not end with rks-gov.net does not belong to the eKosova platform and is not a service offered by the state platform.',
         'Familja' => 'Family',
         'Kontributet' => 'Contributions',
         'Grantet' => 'Grants',
         'Komunalitet' => 'Municipal services',
-        'Vizita në platformë' => 'Platform visits',
-        'Vizita nÃ« platformÃ«' => 'Platform visits',
-        'Shfrytëzime të shërbimit' => 'Service uses',
-        'ShfrytÃ«zime tÃ« shÃ«rbimit' => 'Service uses',
-        'Ky shërbim është placeholder në këtë prototip.' => 'This service is a placeholder in this prototype.',
-        'Ky shÃ«rbim Ã«shtÃ« placeholder nÃ« kÃ«tÃ« prototip.' => 'This service is a placeholder in this prototype.',
-        'Krijo llogarinë tënde' => 'Create your account',
-        'Krijo llogarinÃ« tÃ«nde' => 'Create your account',
-        'Zgjedh shërbimin' => 'Choose the service',
-        'Zgjedh shÃ«rbimin' => 'Choose the service',
-        'Prano shërbimin' => 'Receive the service',
-        'Prano shÃ«rbimin' => 'Receive the service',
+        'Vizita ne platforme' => 'Platform visits',
+        'Vizita ne platforme' => 'Platform visits',
+        'Shfrytezime te sherbimit' => 'Service uses',
+        'Shfrytezime te sherbimit' => 'Service uses',
+        'Ky sherbim eshte placeholder ne kete prototip.' => 'This service is a placeholder in this prototype.',
+        'Ky sherbim eshte placeholder ne kete prototip.' => 'This service is a placeholder in this prototype.',
+        'Krijo llogarine tende' => 'Create your account',
+        'Krijo llogarine tende' => 'Create your account',
+        'Zgjedh sherbimin' => 'Choose the service',
+        'Zgjedh sherbimin' => 'Choose the service',
+        'Prano sherbimin' => 'Receive the service',
+        'Prano sherbimin' => 'Receive the service',
         'Rreth portalit' => 'About the portal',
-        'Privatësia' => 'Privacy',
-        'PrivatÃ«sia' => 'Privacy',
-        'Tani edhe në:' => 'Now also on:',
-        'Tani edhe nÃ«:' => 'Now also on:',
-        'Na ndiqni në:' => 'Follow us:',
-        'Na ndiqni nÃ«:' => 'Follow us:',
+        'Privatesia' => 'Privacy',
+        'Privatesia' => 'Privacy',
+        'Tani edhe ne:' => 'Now also on:',
+        'Tani edhe ne:' => 'Now also on:',
+        'Na ndiqni ne:' => 'Follow us:',
+        'Na ndiqni ne:' => 'Follow us:',
         'Qendra e thirrjeve' => 'Call center',
-        'Projekti u mundësua nga' => 'Project made possible by',
-        'Projekti u mundÃ«sua nga' => 'Project made possible by',
-        'Agjencia e Shoqërisë së Informacionit' => 'Information Society Agency',
-        'Agjencia e ShoqÃ«risÃ« sÃ« Informacionit' => 'Information Society Agency',
-        'MPB, Qeveria e Kosovës' => 'MIA, Government of Kosovo',
-        'MPB, Qeveria e KosovÃ«s' => 'MIA, Government of Kosovo',
-        'Shërbimet në nivel qendror' => 'Central level services',
-        'ShÃ«rbimet nÃ« nivel qendror' => 'Central level services',
-        'Shërbimet në nivel lokal' => 'Local level services',
-        'ShÃ«rbimet nÃ« nivel lokal' => 'Local level services',
-        'Të gjitha' => 'All',
-        'TÃ« gjitha' => 'All',
+        'Projekti u mundesua nga' => 'Project made possible by',
+        'Projekti u mundesua nga' => 'Project made possible by',
+        'Agjencia e Shoqerise se Informacionit' => 'Information Society Agency',
+        'Agjencia e Shoqerise se Informacionit' => 'Information Society Agency',
+        'MPB, Qeveria e Kosoves' => 'MIA, Government of Kosovo',
+        'MPB, Qeveria e Kosoves' => 'MIA, Government of Kosovo',
+        'Sherbimet ne nivel qendror' => 'Central level services',
+        'Sherbimet ne nivel qendror' => 'Central level services',
+        'Sherbimet ne nivel lokal' => 'Local level services',
+        'Sherbimet ne nivel lokal' => 'Local level services',
+        'Te gjitha' => 'All',
+        'Te gjitha' => 'All',
         'Ndrysho te dhenat personale' => 'Edit personal data',
         'Te dhenat personale' => 'Personal data',
         'Student' => 'Student',
@@ -226,128 +230,128 @@ function translations_for(string $lang): array
         'Apliko' => 'Apply',
         'Raporto problem' => 'Report problem',
         'Aplikimi automatik per burse studentore' => 'Automatic student scholarship application',
-        'Aplikimi automatik për bursë studentore' => 'Automatic student scholarship application',
-        'Aplikimi për licencë të karrierës në mësimdhënie' => 'Teaching career license application',
+        'Aplikimi automatik per burse studentore' => 'Automatic student scholarship application',
+        'Aplikimi per licence te karrieres ne mesimdhenie' => 'Teaching career license application',
         'Aplikimi per licence te karrieres ne mesimdhenie' => 'Teaching career license application',
         'Per qytetare' => 'For citizens',
-        'Për qytetarë' => 'For citizens',
+        'Per qytetare' => 'For citizens',
         'Per biznese' => 'For businesses',
-        'Për biznese' => 'For businesses',
+        'Per biznese' => 'For businesses',
         'Te gjitha sherbimet' => 'All services',
-        'Të gjitha shërbimet' => 'All services',
-        'Parashtroni kërkesë për ndihmë ose ankesë' => 'Submit a request for help or complaint',
+        'Te gjitha sherbimet' => 'All services',
+        'Parashtroni kerkese per ndihme ose ankese' => 'Submit a request for help or complaint',
         'Emri dhe mbiemri' => 'Full name',
         'Email adresa' => 'Email address',
-        "Si mund t'ju ndihmojmë?" => 'How can we help you?',
-        'Përshkruani kërkesën ose ankesën tuaj' => 'Describe your request or complaint',
-        'Zgjedh shërbimin' => 'Choose service',
-        'Shëndetësia' => 'Healthcare',
-        'Tjetër' => 'Other',
-        'Ndërpreje' => 'Cancel',
-        'Dërgo' => 'Send',
-        'Kërkesa për ndihmë është placeholder në këtë prototip.' => 'The help request is a placeholder in this prototype.',
+        "Si mund t'ju ndihmojme?" => 'How can we help you?',
+        'Pershkruani kerkesen ose ankesen tuaj' => 'Describe your request or complaint',
+        'Zgjedh sherbimin' => 'Choose service',
+        'Shendetesia' => 'Healthcare',
+        'Tjeter' => 'Other',
+        'Nderpreje' => 'Cancel',
+        'Dergo' => 'Send',
+        'Kerkesa per ndihme eshte placeholder ne kete prototip.' => 'The help request is a placeholder in this prototype.',
         'FAQ eshte placeholder ne kete prototip.' => 'FAQ is a placeholder in this prototype.',
         'Vegzat jane placeholder ne kete prototip.' => 'Links are placeholders in this prototype.',
         'Webmail eshte placeholder ne kete prototip.' => 'Webmail is a placeholder in this prototype.',
     ];
 
     $sr = [
-        'Ndihme' => 'Pomoć',
-        'Ndihmë' => 'Pomoć',
+        'Ndihme' => 'PomoÃ„â€¡',
+        'Ndihme' => 'PomoÃ„â€¡',
         'Vegzat' => 'Linkovi',
         'Gjuha:' => 'Jezik:',
         'Shqi' => 'Alb',
         'Eng' => 'Eng',
         'Srb' => 'Srp',
-        'Kryesore' => 'Početna',
-        'Shërbime' => 'Usluge',
-        'ShÃ«rbime' => 'Usluge',
+        'Kryesore' => 'PoÃ„Âetna',
+        'Sherbime' => 'Usluge',
+        'Sherbime' => 'Usluge',
         'Arsimi' => 'Obrazovanje',
         'Bursat' => 'Stipendije',
         'Informata' => 'Informacije',
-        'Njoftimet' => 'Obaveštenja',
+        'Njoftimet' => 'ObaveÃ…Â¡tenja',
         'Te dhenat e mia' => 'Moji podaci',
         'Paneli' => 'Panel',
         'Dil' => 'Odjavi se',
-        'Platforma e shërbimeve online' => 'Platforma online usluga',
-        'Platforma e shÃ«rbimeve online' => 'Platforma online usluga',
-        'eKosova është platformë shtetërore ku shërbimet publike që gjenden në zyrat dhe sportelet fizike të institucioneve ofrohen në mënyrë elektronike.' => 'eKosova je državna platforma na kojoj se javne usluge iz kancelarija i šaltera institucija nude elektronski.',
-        'eKosova Ã«shtÃ« platformÃ« shtetÃ«rore ku shÃ«rbimet publike qÃ« gjenden nÃ« zyrat dhe sportelet fizike tÃ« institucioneve ofrohen nÃ« mÃ«nyrÃ« elektronike.' => 'eKosova je državna platforma na kojoj se javne usluge iz kancelarija i šaltera institucija nude elektronski.',
+        'Platforma e sherbimeve online' => 'Platforma online usluga',
+        'Platforma e sherbimeve online' => 'Platforma online usluga',
+        'eKosova eshte platforme shteterore ku sherbimet publike qe gjenden ne zyrat dhe sportelet fizike te institucioneve ofrohen ne menyre elektronike.' => 'eKosova je drÃ…Â¾avna platforma na kojoj se javne usluge iz kancelarija i Ã…Â¡altera institucija nude elektronski.',
+        'eKosova eshte platforme shteterore ku sherbimet publike qe gjenden ne zyrat dhe sportelet fizike te institucioneve ofrohen ne menyre elektronike.' => 'eKosova je drÃ…Â¾avna platforma na kojoj se javne usluge iz kancelarija i Ã…Â¡altera institucija nude elektronski.',
         'Regjistrohu' => 'Registruj se',
         'Hyr' => 'Prijavi se',
-        'Kërko shërbimin' => 'Pretraži uslugu',
-        'KÃ«rko shÃ«rbimin' => 'Pretraži uslugu',
-        'Shiko video udhëzuesit' => 'Pogledaj video uputstva',
-        'Shiko video udhÃ«zuesit' => 'Pogledaj video uputstva',
-        'Video udhëzuesit janë placeholder në këtë prototip.' => 'Video uputstva su placeholder u ovom prototipu.',
-        'Video udhÃ«zuesit janÃ« placeholder nÃ« kÃ«tÃ« prototip.' => 'Video uputstva su placeholder u ovom prototipu.',
-        'Vëmendje' => 'Pažnja',
-        'VÃ«mendje' => 'Pažnja',
-        'Ju lutem të keni parasysh që platforma eKosova mund të hapet vetëm përmes adresës zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.' => 'Imajte na umu da se platformi eKosova može pristupiti samo preko zvanične adrese https://ekosova.rks-gov.net i https://rks-gov.net.',
-        'Ju lutem tÃ« keni parasysh qÃ« platforma eKosova mund tÃ« hapet vetÃ«m pÃ«rmes adresÃ«s zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.' => 'Imajte na umu da se platformi eKosova može pristupiti samo preko zvanične adrese https://ekosova.rks-gov.net i https://rks-gov.net.',
-        'Çdo adresë, vegëz apo URL tjetër që nuk përfundon me rks-gov.net nuk i përket platformës eKosova dhe si e tillë nuk janë shërbime që ofrohen nga platforma shtetërore.' => 'Svaka druga adresa, link ili URL koji se ne završava sa rks-gov.net ne pripada platformi eKosova i nije usluga državne platforme.',
-        'Ã‡do adresÃ«, vegÃ«z apo URL tjetÃ«r qÃ« nuk pÃ«rfundon me rks-gov.net nuk i pÃ«rket platformÃ«s eKosova dhe si e tillÃ« nuk janÃ« shÃ«rbime qÃ« ofrohen nga platforma shtetÃ«rore.' => 'Svaka druga adresa, link ili URL koji se ne završava sa rks-gov.net ne pripada platformi eKosova i nije usluga državne platforme.',
+        'Kerko sherbimin' => 'PretraÃ…Â¾i uslugu',
+        'Kerko sherbimin' => 'PretraÃ…Â¾i uslugu',
+        'Shiko video udhezuesit' => 'Pogledaj video uputstva',
+        'Shiko video udhezuesit' => 'Pogledaj video uputstva',
+        'Video udhezuesit jane placeholder ne kete prototip.' => 'Video uputstva su placeholder u ovom prototipu.',
+        'Video udhezuesit jane placeholder ne kete prototip.' => 'Video uputstva su placeholder u ovom prototipu.',
+        'Vemendje' => 'PaÃ…Â¾nja',
+        'Vemendje' => 'PaÃ…Â¾nja',
+        'Ju lutem te keni parasysh qe platforma eKosova mund te hapet vetem permes adreses zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.' => 'Imajte na umu da se platformi eKosova moÃ…Â¾e pristupiti samo preko zvaniÃ„Âne adrese https://ekosova.rks-gov.net i https://rks-gov.net.',
+        'Ju lutem te keni parasysh qe platforma eKosova mund te hapet vetem permes adreses zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.' => 'Imajte na umu da se platformi eKosova moÃ…Â¾e pristupiti samo preko zvaniÃ„Âne adrese https://ekosova.rks-gov.net i https://rks-gov.net.',
+        'Ãƒâ€¡do adrese, vegez apo URL tjeter qe nuk perfundon me rks-gov.net nuk i perket platformes eKosova dhe si e tille nuk jane sherbime qe ofrohen nga platforma shteterore.' => 'Svaka druga adresa, link ili URL koji se ne zavrÃ…Â¡ava sa rks-gov.net ne pripada platformi eKosova i nije usluga drÃ…Â¾avne platforme.',
+        'Cdo adrese, vegez apo URL tjeter qe nuk perfundon me rks-gov.net nuk i perket platformes eKosova dhe si e tille nuk jane sherbime qe ofrohen nga platforma shteterore.' => 'Svaka druga adresa, link ili URL koji se ne zavrÃ…Â¡ava sa rks-gov.net ne pripada platformi eKosova i nije usluga drÃ…Â¾avne platforme.',
         'Familja' => 'Porodica',
         'Kontributet' => 'Doprinosi',
         'Grantet' => 'Grantovi',
         'Komunalitet' => 'Komunalne usluge',
-        'Vizita në platformë' => 'Posete platformi',
-        'Vizita nÃ« platformÃ«' => 'Posete platformi',
-        'Shfrytëzime të shërbimit' => 'Korišćenja usluge',
-        'ShfrytÃ«zime tÃ« shÃ«rbimit' => 'Korišćenja usluge',
-        'Ky shërbim është placeholder në këtë prototip.' => 'Ova usluga je placeholder u ovom prototipu.',
-        'Ky shÃ«rbim Ã«shtÃ« placeholder nÃ« kÃ«tÃ« prototip.' => 'Ova usluga je placeholder u ovom prototipu.',
-        'Krijo llogarinë tënde' => 'Kreiraj svoj nalog',
-        'Krijo llogarinÃ« tÃ«nde' => 'Kreiraj svoj nalog',
-        'Zgjedh shërbimin' => 'Izaberi uslugu',
-        'Zgjedh shÃ«rbimin' => 'Izaberi uslugu',
-        'Prano shërbimin' => 'Primi uslugu',
-        'Prano shÃ«rbimin' => 'Primi uslugu',
+        'Vizita ne platforme' => 'Posete platformi',
+        'Vizita ne platforme' => 'Posete platformi',
+        'Shfrytezime te sherbimit' => 'KoriÃ…Â¡Ã„â€¡enja usluge',
+        'Shfrytezime te sherbimit' => 'KoriÃ…Â¡Ã„â€¡enja usluge',
+        'Ky sherbim eshte placeholder ne kete prototip.' => 'Ova usluga je placeholder u ovom prototipu.',
+        'Ky sherbim eshte placeholder ne kete prototip.' => 'Ova usluga je placeholder u ovom prototipu.',
+        'Krijo llogarine tende' => 'Kreiraj svoj nalog',
+        'Krijo llogarine tende' => 'Kreiraj svoj nalog',
+        'Zgjedh sherbimin' => 'Izaberi uslugu',
+        'Zgjedh sherbimin' => 'Izaberi uslugu',
+        'Prano sherbimin' => 'Primi uslugu',
+        'Prano sherbimin' => 'Primi uslugu',
         'Rreth portalit' => 'O portalu',
-        'Privatësia' => 'Privatnost',
-        'PrivatÃ«sia' => 'Privatnost',
-        'Tani edhe në:' => 'Sada i na:',
-        'Tani edhe nÃ«:' => 'Sada i na:',
-        'Na ndiqni në:' => 'Pratite nas:',
-        'Na ndiqni nÃ«:' => 'Pratite nas:',
+        'Privatesia' => 'Privatnost',
+        'Privatesia' => 'Privatnost',
+        'Tani edhe ne:' => 'Sada i na:',
+        'Tani edhe ne:' => 'Sada i na:',
+        'Na ndiqni ne:' => 'Pratite nas:',
+        'Na ndiqni ne:' => 'Pratite nas:',
         'Qendra e thirrjeve' => 'Pozivni centar',
-        'Projekti u mundësua nga' => 'Projekat omogućio',
-        'Projekti u mundÃ«sua nga' => 'Projekat omogućio',
-        'Agjencia e Shoqërisë së Informacionit' => 'Agencija za informaciono društvo',
-        'Agjencia e ShoqÃ«risÃ« sÃ« Informacionit' => 'Agencija za informaciono društvo',
-        'MPB, Qeveria e Kosovës' => 'MUP, Vlada Kosova',
-        'MPB, Qeveria e KosovÃ«s' => 'MUP, Vlada Kosova',
-        'Shërbimet në nivel qendror' => 'Usluge na centralnom nivou',
-        'ShÃ«rbimet nÃ« nivel qendror' => 'Usluge na centralnom nivou',
-        'Shërbimet në nivel lokal' => 'Usluge na lokalnom nivou',
-        'ShÃ«rbimet nÃ« nivel lokal' => 'Usluge na lokalnom nivou',
-        'Të gjitha' => 'Sve',
-        'TÃ« gjitha' => 'Sve',
-        'Ndrysho te dhenat personale' => 'Izmeni lične podatke',
-        'Te dhenat personale' => 'Lični podaci',
+        'Projekti u mundesua nga' => 'Projekat omoguÃ„â€¡io',
+        'Projekti u mundesua nga' => 'Projekat omoguÃ„â€¡io',
+        'Agjencia e Shoqerise se Informacionit' => 'Agencija za informaciono druÃ…Â¡tvo',
+        'Agjencia e Shoqerise se Informacionit' => 'Agencija za informaciono druÃ…Â¡tvo',
+        'MPB, Qeveria e Kosoves' => 'MUP, Vlada Kosova',
+        'MPB, Qeveria e Kosoves' => 'MUP, Vlada Kosova',
+        'Sherbimet ne nivel qendror' => 'Usluge na centralnom nivou',
+        'Sherbimet ne nivel qendror' => 'Usluge na centralnom nivou',
+        'Sherbimet ne nivel lokal' => 'Usluge na lokalnom nivou',
+        'Sherbimet ne nivel lokal' => 'Usluge na lokalnom nivou',
+        'Te gjitha' => 'Sve',
+        'Te gjitha' => 'Sve',
+        'Ndrysho te dhenat personale' => 'Izmeni liÃ„Âne podatke',
+        'Te dhenat personale' => 'LiÃ„Âni podaci',
         'Student' => 'Student',
         'Banka' => 'Banka',
-        'Kurset e perfunduara' => 'Završeni kursevi',
-        'Zanatet e kryera' => 'Završeni zanati',
+        'Kurset e perfunduara' => 'ZavrÃ…Â¡eni kursevi',
+        'Zanatet e kryera' => 'ZavrÃ…Â¡eni zanati',
         'Shkollimi i meparshem' => 'Prethodno obrazovanje',
-        'Ruaj ndryshimet' => 'Sačuvaj izmene',
-        'Anulo' => 'Otkaži',
+        'Ruaj ndryshimet' => 'SaÃ„Âuvaj izmene',
+        'Anulo' => 'OtkaÃ…Â¾i',
         'Shto studime te reja' => 'Dodaj trenutne studije',
         'Shto studime te kaluara' => 'Dodaj prethodne studije',
-        'Fshij' => 'Obriši',
+        'Fshij' => 'ObriÃ…Â¡i',
         'Nuk Ka' => 'Nema',
         'Nuk eshte plotesuar' => 'Nije popunjeno',
         'Kycu ne llogarine tuaj' => 'Prijavite se na svoj nalog',
         'Fjalekalimi' => 'Lozinka',
-        'Mire se erdhet!' => 'Dobrodošli!',
-        'Per te filluar procesin e regjistrimit plotesoni te dhenat ne vazhdim.' => 'Za početak registracije popunite sledeće podatke.',
+        'Mire se erdhet!' => 'DobrodoÃ…Â¡li!',
+        'Per te filluar procesin e regjistrimit plotesoni te dhenat ne vazhdim.' => 'Za poÃ„Âetak registracije popunite sledeÃ„â€¡e podatke.',
         'Lloji i regjistrimit' => 'Tip registracije',
         'Regjistrohu si Perfitues - Student' => 'Registruj se kao korisnik - Student',
-        'Regjistrohu si Ofrues' => 'Registruj se kao pružalac',
-        'Tipi i ofruesit' => 'Tip pružaoca',
+        'Regjistrohu si Ofrues' => 'Registruj se kao pruÃ…Â¾alac',
+        'Tipi i ofruesit' => 'Tip pruÃ…Â¾aoca',
         'Institucion Arsimor' => 'Obrazovna institucija',
-        'Drejtori Komunale e Arsimit' => 'Opštinska direkcija za obrazovanje',
-        'Ofrues i Pavarur' => 'Nezavisni pružalac',
+        'Drejtori Komunale e Arsimit' => 'OpÃ…Â¡tinska direkcija za obrazovanje',
+        'Ofrues i Pavarur' => 'Nezavisni pruÃ…Â¾alac',
         'Universiteti' => 'Univerzitet',
         'Qyteti' => 'Grad',
         'Numri i karteles' => 'Broj kartice',
@@ -358,47 +362,47 @@ function translations_for(string $lang): array
         'Te dhenat e verifikuara' => 'Verifikovani podaci',
         'Statusi studentor' => 'Studentski status',
         'I verifikuar' => 'Verifikovan',
-        'Nota mesatare' => 'Prosečna ocena',
+        'Nota mesatare' => 'ProseÃ„Âna ocena',
         'Statusi social' => 'Socijalni status',
         'Statuset sociale' => 'Socijalni statusi',
         'Femije veterani' => 'Dete veterana',
-        'Jetim' => 'Siroče',
-        'Ndihme sociale' => 'Socijalna pomoć',
+        'Jetim' => 'SiroÃ„Âe',
+        'Ndihme sociale' => 'Socijalna pomoÃ„â€¡',
         'Aplikimet e mia' => 'Moje prijave',
-        'Ende nuk keni aplikuar per burse.' => 'Još niste aplicirali za stipendiju.',
-        'Ankohu per Gabim' => 'Prijavi grešku',
+        'Ende nuk keni aplikuar per burse.' => 'JoÃ…Â¡ niste aplicirali za stipendiju.',
+        'Ankohu per Gabim' => 'Prijavi greÃ…Â¡ku',
         'Te dhenat e perdoruesit' => 'Podaci korisnika',
-        'Profili i studentit ruan te dhenat qe perdoren gjate aplikimit automatik.' => 'Studentski profil čuva podatke koji se koriste tokom automatske prijave.',
+        'Profili i studentit ruan te dhenat qe perdoren gjate aplikimit automatik.' => 'Studentski profil Ã„Âuva podatke koji se koriste tokom automatske prijave.',
         'Ndrysho te dhenat' => 'Izmeni podatke',
         'Apliko per burse' => 'Apliciraj za stipendiju',
-        'Familja e ngushte' => 'Uža porodica',
-        'Nuk ka te dhena familjare te regjistruara.' => 'Nema registrovanih porodičnih podataka.',
-        'Dokumentet dhe te dhenat e ruajtura' => 'Dokumenti i sačuvani podaci',
+        'Familja e ngushte' => 'UÃ…Â¾a porodica',
+        'Nuk ka te dhena familjare te regjistruara.' => 'Nema registrovanih porodiÃ„Ânih podataka.',
+        'Dokumentet dhe te dhenat e ruajtura' => 'Dokumenti i saÃ„Âuvani podaci',
         'Nuk ka dokumente te regjistruara.' => 'Nema registrovanih dokumenata.',
         'Bursat aktive' => 'Aktivne stipendije',
         'Apliko' => 'Apliciraj',
         'Raporto problem' => 'Prijavi problem',
         'Aplikimi automatik per burse studentore' => 'Automatska prijava za studentsku stipendiju',
-        'Aplikimi automatik për bursë studentore' => 'Automatska prijava za studentsku stipendiju',
-        'Aplikimi për licencë të karrierës në mësimdhënie' => 'Prijava za licencu nastavničke karijere',
-        'Aplikimi per licence te karrieres ne mesimdhenie' => 'Prijava za licencu nastavničke karijere',
-        'Per qytetare' => 'Za građane',
-        'Për qytetarë' => 'Za građane',
+        'Aplikimi automatik per burse studentore' => 'Automatska prijava za studentsku stipendiju',
+        'Aplikimi per licence te karrieres ne mesimdhenie' => 'Prijava za licencu nastavniÃ„Âke karijere',
+        'Aplikimi per licence te karrieres ne mesimdhenie' => 'Prijava za licencu nastavniÃ„Âke karijere',
+        'Per qytetare' => 'Za graÃ„â€˜ane',
+        'Per qytetare' => 'Za graÃ„â€˜ane',
         'Per biznese' => 'Za biznise',
-        'Për biznese' => 'Za biznise',
+        'Per biznese' => 'Za biznise',
         'Te gjitha sherbimet' => 'Sve usluge',
-        'Të gjitha shërbimet' => 'Sve usluge',
-        'Parashtroni kërkesë për ndihmë ose ankesë' => 'Podnesite zahtev za pomoć ili žalbu',
+        'Te gjitha sherbimet' => 'Sve usluge',
+        'Parashtroni kerkese per ndihme ose ankese' => 'Podnesite zahtev za pomoÃ„â€¡ ili Ã…Â¾albu',
         'Emri dhe mbiemri' => 'Ime i prezime',
         'Email adresa' => 'Email adresa',
-        "Si mund t'ju ndihmojmë?" => 'Kako vam možemo pomoći?',
-        'Përshkruani kërkesën ose ankesën tuaj' => 'Opišite svoj zahtev ili žalbu',
-        'Zgjedh shërbimin' => 'Izaberite uslugu',
-        'Shëndetësia' => 'Zdravstvo',
-        'Tjetër' => 'Drugo',
-        'Ndërpreje' => 'Prekini',
-        'Dërgo' => 'Pošalji',
-        'Kërkesa për ndihmë është placeholder në këtë prototip.' => 'Zahtev za pomoć je placeholder u ovom prototipu.',
+        "Si mund t'ju ndihmojme?" => 'Kako vam moÃ…Â¾emo pomoÃ„â€¡i?',
+        'Pershkruani kerkesen ose ankesen tuaj' => 'OpiÃ…Â¡ite svoj zahtev ili Ã…Â¾albu',
+        'Zgjedh sherbimin' => 'Izaberite uslugu',
+        'Shendetesia' => 'Zdravstvo',
+        'Tjeter' => 'Drugo',
+        'Nderpreje' => 'Prekini',
+        'Dergo' => 'PoÃ…Â¡alji',
+        'Kerkesa per ndihme eshte placeholder ne kete prototip.' => 'Zahtev za pomoÃ„â€¡ je placeholder u ovom prototipu.',
         'FAQ eshte placeholder ne kete prototip.' => 'FAQ je placeholder u ovom prototipu.',
         'Vegzat jane placeholder ne kete prototip.' => 'Linkovi su placeholder u ovom prototipu.',
         'Webmail eshte placeholder ne kete prototip.' => 'Webmail je placeholder u ovom prototipu.',
@@ -498,6 +502,7 @@ function action_save_scholarship(): void
     $providerName = trim($_POST['provider_name'] ?? '');
     $startDate = trim($_POST['start_date'] ?? '');
     $endDate = trim($_POST['end_date'] ?? ($_POST['deadline'] ?? ''));
+    $amountRaw = trim((string) ($_POST['amount'] ?? ''));
 
     if ($isAdmin) {
         $providerId = (int) ($_POST['provider_id'] ?? 0);
@@ -515,13 +520,19 @@ function action_save_scholarship(): void
         $providerName = (string) $stmt->fetchColumn();
     }
 
+    $hasVariableAmount = is_kamenica_municipal_scholarship([
+        'category' => $category,
+        'provider_name' => $providerName,
+    ]);
+    $amount = $hasVariableAmount && !is_numeric($amountRaw) ? 1.0 : (float) $amountRaw;
+
     $data = [
         $templateId > 0 ? $templateId : null,
         $category !== '' ? $category : null,
         $providerName !== '' ? $providerName : null,
         trim($_POST['title'] ?? ''),
         trim($_POST['description'] ?? ''),
-        (float) ($_POST['amount'] ?? 0),
+        $amount,
         $startDate !== '' ? $startDate : null,
         $endDate,
         $endDate,
@@ -536,7 +547,7 @@ function action_save_scholarship(): void
         ($_POST['status'] ?? 'active') === 'inactive' ? 0 : 1,
     ];
 
-    if ($data[3] === '' || $data[5] <= 0 || $data[7] === '') {
+    if ($data[3] === '' || (!$hasVariableAmount && $data[5] <= 0) || $data[7] === '') {
         flash(t('scholarship_required_fields'), 'error');
         redirect($redirectPage);
     }
@@ -561,7 +572,10 @@ function action_save_scholarship(): void
             popup_flash(t('scholarship_created'));
         }
 
-        save_scholarship_rules($pdo, $scholarshipId, $_POST['rules'] ?? []);
+        save_scholarship_rules($pdo, $scholarshipId, normalize_scholarship_rules_for_context($_POST['rules'] ?? [], [
+            'category' => $category,
+            'provider_name' => $providerName,
+        ]));
         save_scholarship_documents($pdo, $scholarshipId, $_POST['documents'] ?? []);
         $pdo->commit();
     } catch (Throwable $e) {
@@ -1089,6 +1103,45 @@ function save_scholarship_rules(PDO $pdo, int $scholarshipId, mixed $rules): voi
     }
 }
 
+function normalize_scholarship_rules_for_context(mixed $rules, array $scholarship): array
+{
+    if (!is_array($rules)) {
+        return [];
+    }
+
+    if (!is_kamenica_municipal_scholarship($scholarship)) {
+        return $rules;
+    }
+
+    $pointRuleKeys = [
+        'family_students_count',
+        'war_category',
+        'receives_social_assistance',
+        'is_deficit_program',
+        'special_needs',
+        'two_parents_missing',
+        'one_parent_missing',
+        'deficit_programs',
+    ];
+
+    foreach ($rules as &$rule) {
+        if (!is_array($rule)) {
+            continue;
+        }
+
+        $key = (string) ($rule['rule_key'] ?? '');
+        $operator = normalize_rule_operator((string) ($rule['operator'] ?? '='));
+        $points = (int) ($rule['points'] ?? 0);
+
+        if (($key === 'average_grade' && $operator === 'between') || in_array($key, $pointRuleKeys, true) || $points > 0) {
+            $rule['is_required'] = 0;
+        }
+    }
+    unset($rule);
+
+    return $rules;
+}
+
 function save_scholarship_documents(PDO $pdo, int $scholarshipId, mixed $documents): void
 {
     if (!is_array($documents)) {
@@ -1179,7 +1232,13 @@ function scholarship_match_for_student(array $profile, array $scholarship): arra
         $isRequired = (int) ($rule['is_required'] ?? 0) === 1;
         $override = $isRequired ? evaluate_required_rule_override($student, $rule, $rules) : null;
         $studentValue = getStudentRuleValue($studentId, (string) ($rule['rule_key'] ?? ''), $student);
-        $passed = $override ?? evaluateMappedScholarshipRule($studentId, $student, $rule);
+        $passed = $override ?? evaluateMappedScholarshipRule($studentId, $student, $rule, $rules);
+        if (($rule['rule_key'] ?? '') === 'is_deficit_program' && $passed) {
+            $studentValue = 'po';
+        }
+        if (($rule['rule_key'] ?? '') === 'deficit_programs') {
+            continue;
+        }
         $item = rule_match_report_item($studentValue, $rule, $scholarship, $passed, $isRequired);
         $debug[] = [
             'rule_key' => (string) ($rule['rule_key'] ?? ''),
@@ -1197,6 +1256,9 @@ function scholarship_match_for_student(array $profile, array $scholarship): arra
             continue;
         }
 
+        if (is_hidden_bonus_report_item($item)) {
+            continue;
+        }
         $bonuses[] = $item;
     }
 
@@ -1256,7 +1318,7 @@ function scholarship_rules_for_matching(int $scholarshipId, array $scholarship):
         $stmt->execute([$scholarshipId]);
         $rules = $stmt->fetchAll();
         if ($rules) {
-            return $rules;
+            return normalize_scholarship_rules_for_context($rules, $scholarship);
         }
     } catch (Throwable $e) {
         // Fall back to legacy columns below.
@@ -1285,7 +1347,7 @@ function scholarship_rules_for_matching(int $scholarshipId, array $scholarship):
         }
     }
 
-    return $rules;
+    return normalize_scholarship_rules_for_context($rules, $scholarship);
 }
 
 function student_matching_profile(array $profile): array
@@ -1314,7 +1376,8 @@ function student_matching_profile(array $profile): array
     return [
         'id_card_completed' => filled($firstName) && filled($lastName ?: $firstName) && filled($profile['personal_number'] ?? '') ? 'po' : 'jo',
         'city' => (string) ($profile['city'] ?? ''),
-        'residence_municipality' => (string) (($documents['residence_certificate']['municipality'] ?? '') ?: ($profile['city'] ?? '')),
+        'residence_municipality' => (string) (($documents['residence_certificate']['municipality'] ?? '') ?: ($profile['residence'] ?? '') ?: ($profile['city'] ?? '')),
+        'origin_municipality' => (string) (($documents['residence_certificate']['origin_municipality'] ?? '') ?: ($profile['city'] ?? '')),
         'university' => (string) ($profile['university'] ?? ''),
         'faculty' => (string) ($studentDoc['faculty'] ?? $meta['faculty'] ?? ''),
         'program' => $program,
@@ -1397,11 +1460,14 @@ function evaluate_scholarship_rule(array $student, array $rule): bool
     return evaluateRule($actual, $operator, $expected);
 }
 
-function evaluateMappedScholarshipRule(int $studentId, array $student, array $rule): bool
+function evaluateMappedScholarshipRule(int $studentId, array $student, array $rule, array $rules = []): bool
 {
     $key = (string) ($rule['rule_key'] ?? '');
     if ($key === 'deficit_programs' || in_array($key, ['first_year_university', 'public_university_after_first_year'], true)) {
         return evaluate_scholarship_rule($student, $rule);
+    }
+    if ($key === 'is_deficit_program' && normalize_match_value((string) ($rule['rule_value'] ?? '')) === 'po') {
+        return student_is_deficit_for_rules($student, $rules);
     }
 
     $studentValue = getStudentRuleValue($studentId, $key, $student);
@@ -1453,17 +1519,38 @@ function getRuleDisplayInfo(string $ruleKey): array
 
 function calculateOptionalPoints(int $studentId, int $scholarshipId): array
 {
-    $stmt = db()->prepare('SELECT rule_key, operator, rule_value, is_required, points, description FROM scholarship_rules WHERE scholarship_id=? AND is_required=0 ORDER BY id');
+    $scholarshipStmt = db()->prepare('SELECT s.*, COALESCE(s.provider_name, u.name) provider_name FROM scholarships s LEFT JOIN users u ON u.id=s.provider_id WHERE s.id=?');
+    $scholarshipStmt->execute([$scholarshipId]);
+    $scholarship = $scholarshipStmt->fetch() ?: [];
+
+    $stmt = db()->prepare('SELECT rule_key, operator, rule_value, is_required, points, description FROM scholarship_rules WHERE scholarship_id=? ORDER BY is_required DESC, id');
     $stmt->execute([$scholarshipId]);
+    $rules = normalize_scholarship_rules_for_context($stmt->fetchAll(), $scholarship);
+    $profileStmt = db()->prepare('SELECT sp.*, u.name FROM student_profiles sp JOIN users u ON u.id=sp.user_id WHERE sp.user_id=?');
+    $profileStmt->execute([$studentId]);
+    $student = student_matching_profile($profileStmt->fetch() ?: []);
     $items = [];
     $total = 0;
 
-    foreach ($stmt->fetchAll() as $rule) {
-        $studentValue = getStudentRuleValue($studentId, (string) $rule['rule_key']);
-        $passed = evaluateRule($studentValue, (string) $rule['operator'], (string) $rule['rule_value']);
+    foreach ($rules as $rule) {
+        if ((int) ($rule['is_required'] ?? 0) === 1) {
+            continue;
+        }
+        if (($rule['rule_key'] ?? '') === 'deficit_programs') {
+            continue;
+        }
+        $studentValue = getStudentRuleValue($studentId, (string) $rule['rule_key'], $student);
+        $passed = evaluateMappedScholarshipRule($studentId, $student, $rule, $rules);
+        if (($rule['rule_key'] ?? '') === 'is_deficit_program' && $passed) {
+            $studentValue = 'po';
+        }
         $points = $passed ? (int) ($rule['points'] ?? 0) : 0;
         $total += $points;
-        $items[] = rule_match_report_item($studentValue, $rule, [], $passed, false);
+        $item = rule_match_report_item($studentValue, $rule, $scholarship, $passed, false);
+        if (is_hidden_bonus_report_item($item)) {
+            continue;
+        }
+        $items[] = $item;
     }
 
     return ['total' => $total, 'items' => $items];
@@ -1489,11 +1576,23 @@ function rule_match_report_item(mixed $studentValue, array $rule, array $scholar
         'required_value' => readable_rule_value((string) ($rule['rule_value'] ?? '')),
         'student_value' => readable_rule_value($studentValue),
         'status_text' => $isRequired
-            ? ($passed ? 'Plotësohet' : 'Nuk plotësohet')
-            : ($passed ? 'Përfitohet bonus' : 'Nuk përfitohet bonus'),
+            ? ($passed ? 'Plotesohet' : 'Nuk plotesohet')
+            : ($passed ? 'Perfitohet bonus' : 'Nuk perfitohet bonus'),
         'points' => $points,
         'points_awarded' => $pointsAwarded,
     ];
+}
+
+function is_hidden_bonus_report_item(array $item): bool
+{
+    return ($item['rule_key'] ?? '') === 'average_grade'
+        && normalize_rule_operator((string) ($item['operator'] ?? '')) === 'between'
+        && empty($item['points_awarded']);
+}
+
+function visible_bonus_report_items(array $items): array
+{
+    return array_values(array_filter($items, fn($item) => is_array($item) && !is_hidden_bonus_report_item($item)));
 }
 
 function rule_key_alias(string $ruleKey): string
@@ -1518,37 +1617,37 @@ function rule_key_alias(string $ruleKey): string
 function rule_display_map(): array
 {
     return [
-        'id_card_completed' => ['label' => 'ID / Letërnjoftimi', 'document_section' => 'ID / Letërnjoftimi', 'human_description' => 'ID / Letërnjoftimi është i plotësuar'],
+        'id_card_completed' => ['label' => 'ID / Leternjoftimi', 'document_section' => 'ID / Leternjoftimi', 'human_description' => 'ID / Leternjoftimi eshte i plotesuar'],
         'residence_municipality' => ['label' => 'Certifikata e Vendbanimit', 'document_section' => 'Certifikata e Vendbanimit', 'human_description' => 'Komuna e vendbanimit'],
         'city' => ['label' => 'Certifikata e Vendbanimit', 'document_section' => 'Certifikata e Vendbanimit', 'human_description' => 'Komuna/qyteti i vendbanimit'],
-        'full_time' => ['label' => 'Vërtetimi i Studentit Aktiv', 'document_section' => 'Vërtetimi i Studentit Aktiv', 'human_description' => 'Student i rregullt'],
-        'student_active' => ['label' => 'Vërtetimi i Studentit Aktiv', 'document_section' => 'Vërtetimi i Studentit Aktiv', 'human_description' => 'Student aktiv'],
-        'repeating_year' => ['label' => 'Vërtetimi i Studentit Aktiv', 'document_section' => 'Vërtetimi i Studentit Aktiv', 'human_description' => 'Përsëritës i vitit'],
-        'study_level' => ['label' => 'Vërtetimi i Studentit Aktiv', 'document_section' => 'Vërtetimi i Studentit Aktiv', 'human_description' => 'Niveli i studimeve'],
-        'study_year' => ['label' => 'Vërtetimi i Studentit Aktiv', 'document_section' => 'Vërtetimi i Studentit Aktiv', 'human_description' => 'Viti i studimit'],
-        'university' => ['label' => 'Vërtetimi i Studentit Aktiv', 'document_section' => 'Vërtetimi i Studentit Aktiv', 'human_description' => 'Universiteti'],
-        'faculty' => ['label' => 'Vërtetimi i Studentit Aktiv', 'document_section' => 'Vërtetimi i Studentit Aktiv', 'human_description' => 'Fakulteti'],
-        'public_university' => ['label' => 'Vërtetimi i Studentit Aktiv', 'document_section' => 'Vërtetimi i Studentit Aktiv', 'human_description' => 'Universitet publik'],
-        'correspondence' => ['label' => 'Vërtetimi i Studentit Aktiv', 'document_section' => 'Vërtetimi i Studentit Aktiv', 'human_description' => 'Student me korrespondencë'],
-        'self_financing' => ['label' => 'Vërtetimi i Studentit Aktiv', 'document_section' => 'Vërtetimi i Studentit Aktiv', 'human_description' => 'Vetëfinancim'],
+        'full_time' => ['label' => 'Vertetimi i Studentit Aktiv', 'document_section' => 'Vertetimi i Studentit Aktiv', 'human_description' => 'Student i rregullt'],
+        'student_active' => ['label' => 'Vertetimi i Studentit Aktiv', 'document_section' => 'Vertetimi i Studentit Aktiv', 'human_description' => 'Student aktiv'],
+        'repeating_year' => ['label' => 'Vertetimi i Studentit Aktiv', 'document_section' => 'Vertetimi i Studentit Aktiv', 'human_description' => 'Perserites i vitit'],
+        'study_level' => ['label' => 'Vertetimi i Studentit Aktiv', 'document_section' => 'Vertetimi i Studentit Aktiv', 'human_description' => 'Niveli i studimeve'],
+        'study_year' => ['label' => 'Vertetimi i Studentit Aktiv', 'document_section' => 'Vertetimi i Studentit Aktiv', 'human_description' => 'Viti i studimit'],
+        'university' => ['label' => 'Vertetimi i Studentit Aktiv', 'document_section' => 'Vertetimi i Studentit Aktiv', 'human_description' => 'Universiteti'],
+        'faculty' => ['label' => 'Vertetimi i Studentit Aktiv', 'document_section' => 'Vertetimi i Studentit Aktiv', 'human_description' => 'Fakulteti'],
+        'public_university' => ['label' => 'Vertetimi i Studentit Aktiv', 'document_section' => 'Vertetimi i Studentit Aktiv', 'human_description' => 'Universitet publik'],
+        'correspondence' => ['label' => 'Vertetimi i Studentit Aktiv', 'document_section' => 'Vertetimi i Studentit Aktiv', 'human_description' => 'Student me korrespondence'],
+        'self_financing' => ['label' => 'Vertetimi i Studentit Aktiv', 'document_section' => 'Vertetimi i Studentit Aktiv', 'human_description' => 'Vetefinancim'],
         'average_grade' => ['label' => 'Certifikata e Notave', 'document_section' => 'Certifikata e Notave', 'human_description' => 'Nota mesatare'],
-        'previous_year_exams_completed' => ['label' => 'Certifikata e Notave', 'document_section' => 'Certifikata e Notave', 'human_description' => 'Provimet e vitit paraprak të përfunduara'],
-        'september_exams_completed' => ['label' => 'Certifikata e Notave', 'document_section' => 'Certifikata e Notave', 'human_description' => 'Provimet e përfunduara deri në afatin e shtatorit'],
+        'previous_year_exams_completed' => ['label' => 'Certifikata e Notave', 'document_section' => 'Certifikata e Notave', 'human_description' => 'Provimet e vitit paraprak te perfunduara'],
+        'september_exams_completed' => ['label' => 'Certifikata e Notave', 'document_section' => 'Certifikata e Notave', 'human_description' => 'Provimet e perfunduara deri ne afatin e shtatorit'],
         'bank_completed' => ['label' => 'Konfirmimi Bankar', 'document_section' => 'Konfirmimi Bankar', 'human_description' => 'Llogaria bankare e konfirmuar'],
-        'student_employed' => ['label' => 'Vërtetimi nga ATK', 'document_section' => 'Vërtetimi nga Administrata Tatimore e Kosovës', 'human_description' => 'Studenti i punësuar'],
-        'active_worker' => ['label' => 'Vërtetimi nga ATK', 'document_section' => 'Vërtetimi nga Administrata Tatimore e Kosovës', 'human_description' => 'Punëtor aktiv'],
-        'active_other_scholarship' => ['label' => 'Regjistri i Bursave', 'document_section' => 'Regjistri i Bursave', 'human_description' => 'Ka bursë tjetër aktive'],
-        'family_students_count' => ['label' => 'Numri i studentëve në familje', 'document_section' => 'Deklarata e Bashkësisë Familjare', 'human_description' => 'Numri i studentëve në familje'],
-        'war_category' => ['label' => 'Kategori e dalë nga lufta', 'document_section' => 'Vërtetimi për Kategori të Luftës', 'human_description' => 'Kategori e dalë nga lufta'],
-        'is_veteran_child' => ['label' => 'Fëmijë veterani', 'document_section' => 'Vërtetimi për Kategori të Luftës', 'human_description' => 'Fëmijë veterani'],
-        'martyr_child' => ['label' => 'Fëmijë dëshmori', 'document_section' => 'Vërtetimi për Kategori të Luftës', 'human_description' => 'Fëmijë dëshmori'],
-        'receives_social_assistance' => ['label' => 'Përfitues i ndihmës sociale', 'document_section' => 'Vërtetimi për Ndihmë Sociale', 'human_description' => 'Përfitues i ndihmës sociale'],
-        'is_deficit_program' => ['label' => 'Drejtim deficitar', 'document_section' => 'Dëshmi për Drejtime Deficitare', 'human_description' => 'Drejtim deficitar'],
-        'special_needs' => ['label' => 'Student me nevoja të veçanta', 'document_section' => 'Vërtetimi për Nevoja të Veçanta', 'human_description' => 'Student me nevoja të veçanta'],
-        'one_parent_missing' => ['label' => 'Pa njërin prind', 'document_section' => 'Certifikata e Vdekjes së Prindërve', 'human_description' => 'Pa njërin prind'],
-        'two_parents_missing' => ['label' => 'Pa dy prindër', 'document_section' => 'Certifikata e Vdekjes së Prindërve', 'human_description' => 'Pa dy prindër'],
-        'is_final_year' => ['label' => 'Student i vitit të fundit', 'document_section' => 'Vërtetimi i Studentit Aktiv', 'human_description' => 'Student i vitit të fundit'],
-        'competition_awards' => ['label' => 'Suksese në gara', 'document_section' => 'Diploma/Mirënjohje/Certifikata për gara', 'human_description' => 'Suksese në gara'],
+        'student_employed' => ['label' => 'Vertetimi nga ATK', 'document_section' => 'Vertetimi nga Administrata Tatimore e Kosoves', 'human_description' => 'Studenti i punesuar'],
+        'active_worker' => ['label' => 'Vertetimi nga ATK', 'document_section' => 'Vertetimi nga Administrata Tatimore e Kosoves', 'human_description' => 'Punetor aktiv'],
+        'active_other_scholarship' => ['label' => 'Regjistri i Bursave', 'document_section' => 'Regjistri i Bursave', 'human_description' => 'Ka burse tjeter aktive'],
+        'family_students_count' => ['label' => 'Numri i studenteve ne familje', 'document_section' => 'Deklarata e Bashkesise Familjare', 'human_description' => 'Numri i studenteve ne familje'],
+        'war_category' => ['label' => 'Kategori e dale nga lufta', 'document_section' => 'Vertetimi per Kategori te Luftes', 'human_description' => 'Kategori e dale nga lufta'],
+        'is_veteran_child' => ['label' => 'Femije veterani', 'document_section' => 'Vertetimi per Kategori te Luftes', 'human_description' => 'Femije veterani'],
+        'martyr_child' => ['label' => 'Femije deshmori', 'document_section' => 'Vertetimi per Kategori te Luftes', 'human_description' => 'Femije deshmori'],
+        'receives_social_assistance' => ['label' => 'Perfitues i ndihmes sociale', 'document_section' => 'Vertetimi per Ndihme Sociale', 'human_description' => 'Perfitues i ndihmes sociale'],
+        'is_deficit_program' => ['label' => 'Drejtim deficitar', 'document_section' => 'Deshmi per Drejtime Deficitare', 'human_description' => 'Drejtim deficitar'],
+        'special_needs' => ['label' => 'Student me nevoja te veÃƒÂ§anta', 'document_section' => 'Vertetimi per Nevoja te VeÃƒÂ§anta', 'human_description' => 'Student me nevoja te veÃƒÂ§anta'],
+        'one_parent_missing' => ['label' => 'Pa njerin prind', 'document_section' => 'Certifikata e Vdekjes se Prinderve', 'human_description' => 'Pa njerin prind'],
+        'two_parents_missing' => ['label' => 'Pa dy prinder', 'document_section' => 'Certifikata e Vdekjes se Prinderve', 'human_description' => 'Pa dy prinder'],
+        'is_final_year' => ['label' => 'Student i vitit te fundit', 'document_section' => 'Vertetimi i Studentit Aktiv', 'human_description' => 'Student i vitit te fundit'],
+        'competition_awards' => ['label' => 'Suksese ne gara', 'document_section' => 'Diploma/Mirenjohje/Certifikata per gara', 'human_description' => 'Suksese ne gara'],
     ];
 }
 
@@ -1562,7 +1661,7 @@ function readable_rule_value(mixed $value): string
     return match (normalize_match_value($text)) {
         'po' => 'Po',
         'jo' => 'Jo',
-        '' => 'Nuk është plotësuar',
+        '' => 'Nuk eshte plotesuar',
         default => $text,
     };
 }
@@ -1736,7 +1835,7 @@ function action_apply(): void
 
     $match = scholarship_match_for_student($student, $scholarship);
     if (!$match['eligible']) {
-        flash('Kjo bursë nuk përputhet me profilin tuaj aktual.', 'error');
+        flash('Kjo burse nuk perputhet me profilin tuaj aktual.', 'error');
         redirect('dashboard');
     }
 
@@ -1744,7 +1843,7 @@ function action_apply(): void
     $stmt->execute([current_user()['id'], $scholarshipId]);
     $existing = $stmt->fetch();
     if ($existing) {
-        flash('Ju tashmë keni aplikuar për këtë bursë.', 'error');
+        flash('Ju tashme keni aplikuar per kete burse.', 'error');
         redirect('dashboard');
     }
 
@@ -1755,7 +1854,7 @@ function action_apply(): void
         'debug' => $match['debug'] ?? [],
     ], JSON_UNESCAPED_UNICODE);
     $pointsTotal = array_sum(array_map(fn($bonus) => (int) ($bonus['points_awarded'] ?? 0), $match['bonuses']));
-    $resultMessage = 'Urime! Ju keni fituar bursën.';
+    $resultMessage = 'Urime! Ju keni fituar bursen.';
 
     $stmt = db()->prepare('INSERT INTO applications (student_id, scholarship_id, status, verification_json, applied_at, points_total, result_message) VALUES (?, ?, ?, ?, NOW(), ?, ?)');
     $stmt->execute([current_user()['id'], $scholarshipId, $status, $verificationJson, $pointsTotal, $resultMessage]);
@@ -1788,7 +1887,7 @@ function action_complaint(): void
 
 function application_report(int $applicationId, int $studentId): ?array
 {
-    $stmt = db()->prepare('SELECT a.*, s.title, s.category, s.id scholarship_id, COALESCE(s.provider_name, u.name) provider_name FROM applications a JOIN scholarships s ON s.id=a.scholarship_id LEFT JOIN users u ON u.id=s.provider_id WHERE a.id=? AND a.student_id=?');
+    $stmt = db()->prepare('SELECT a.*, s.title, s.category, s.amount, s.id scholarship_id, COALESCE(s.provider_name, u.name) provider_name FROM applications a JOIN scholarships s ON s.id=a.scholarship_id LEFT JOIN users u ON u.id=s.provider_id WHERE a.id=? AND a.student_id=?');
     $stmt->execute([$applicationId, $studentId]);
     $application = $stmt->fetch();
 
@@ -1801,9 +1900,9 @@ function scholarship_document_sections(int $scholarshipId): array
         $stmt = db()->prepare('SELECT document_section_name FROM scholarship_documents WHERE scholarship_id=? ORDER BY is_required DESC, id');
         $stmt->execute([$scholarshipId]);
         $sections = array_map(fn($row) => (string) $row['document_section_name'], $stmt->fetchAll());
-        return $sections ?: ['ID / Letërnjoftimi', 'Vërtetimi i Studentit Aktiv', 'Certifikata e Notave'];
+        return $sections ?: ['ID / Leternjoftimi', 'Vertetimi i Studentit Aktiv', 'Certifikata e Notave'];
     } catch (Throwable $e) {
-        return ['ID / Letërnjoftimi', 'Vërtetimi i Studentit Aktiv', 'Certifikata e Notave'];
+        return ['ID / Leternjoftimi', 'Vertetimi i Studentit Aktiv', 'Certifikata e Notave'];
     }
 }
 
@@ -2143,7 +2242,7 @@ function action_admin_delete_user(): void
         $stmt->execute([$id]);
         popup_flash('Fshirja u krye me sukses.');
     } else {
-        flash('Nuk mund ta fshini llogarinë tuaj aktive.', 'error');
+        flash('Nuk mund ta fshini llogarine tuaj aktive.', 'error');
     }
     redirect('admin');
 }
@@ -2158,6 +2257,15 @@ function action_admin_update_complaint(): void
     redirect('admin');
 }
 
+function action_admin_delete_application(): void
+{
+    require_role(['admin']);
+    $stmt = db()->prepare('DELETE FROM applications WHERE id = ?');
+    $stmt->execute([(int) ($_POST['id'] ?? 0)]);
+    popup_flash('Aplikimi u fshi me sukses.');
+    redirect('admin');
+}
+
 function render_layout(string $page): void
 {
     $publicPages = ['home', 'login', 'register', 'info', 'help'];
@@ -2169,25 +2277,40 @@ function render_layout(string $page): void
     ob_start();
     require __DIR__ . '/../src/pages/layout_top.php';
 
-    match ($page) {
-        'login' => page_login(),
-        'register' => page_register(),
-        'dashboard' => page_dashboard(),
-        'services' => page_services(),
-        'education' => page_education(),
-        'help' => page_help(),
-        'info' => page_info(),
-        'scholarships' => page_scholarships(),
-        'profile' => page_profile(),
-        'provider' => page_provider(),
-        'admin' => page_admin(),
-        'analytics' => page_analytics(),
-        'complaint' => page_complaint(),
-        default => page_home(),
-    };
+    try {
+        match ($page) {
+            'login' => page_login(),
+            'register' => page_register(),
+            'dashboard' => page_dashboard(),
+            'services' => page_services(),
+            'education' => page_education(),
+            'help' => page_help(),
+            'info' => page_info(),
+            'scholarships' => page_scholarships(),
+            'profile' => page_profile(),
+            'provider' => page_provider(),
+            'admin' => page_admin(),
+            'analytics' => page_analytics(),
+            'complaint' => page_complaint(),
+            default => page_home(),
+        };
+    } catch (Throwable $e) {
+        render_development_error($e);
+    }
 
     require __DIR__ . '/../src/pages/layout_bottom.php';
     echo translate_output(ob_get_clean());
+}
+
+function render_development_error(Throwable $e): void
+{
+    ?>
+    <section class="panel">
+        <h1>Gabim gjate ngarkimit te faqes</h1>
+        <p class="muted-text">Faqja nuk mund te ngarkohej. Detajet jane shfaqur sepse development error reporting eshte aktiv.</p>
+        <pre><?= e($e::class . ': ' . $e->getMessage() . "\n" . $e->getFile() . ':' . $e->getLine()) ?></pre>
+    </section>
+    <?php
 }
 
 function page_home(): void
@@ -2196,8 +2319,8 @@ function page_home(): void
     <section class="portal-home">
         <div class="portal-hero">
             <div>
-                <h1>Platforma e shërbimeve online</h1>
-                <p>eKosova është platformë shtetërore ku shërbimet publike që gjenden në zyrat dhe sportelet fizike të institucioneve ofrohen në mënyrë elektronike.</p>
+                <h1>Platforma e sherbimeve online</h1>
+                <p>eKosova eshte platforme shteterore ku sherbimet publike qe gjenden ne zyrat dhe sportelet fizike te institucioneve ofrohen ne menyre elektronike.</p>
                 <?php if (!current_user()): ?>
                     <div class="portal-auth-actions">
                         <a class="btn btn-outline" href="<?= BASE_URL ?>/index.php?page=register">Regjistrohu</a>
@@ -2206,36 +2329,36 @@ function page_home(): void
                 <?php endif; ?>
             </div>
             <div class="portal-tools">
-                <label class="portal-search" aria-label="Kërko shërbimin">
-                    <input type="search" placeholder="Kërko shërbimin">
-                    <span>⌕</span>
+                <label class="portal-search" aria-label="Kerko sherbimin">
+                    <input type="search" placeholder="Kerko sherbimin">
+                    <span>Ã¢Å’â€¢</span>
                 </label>
-                <a class="video-link placeholder" href="<?= BASE_URL ?>/index.php?page=home" data-placeholder="Video udhëzuesit janë placeholder në këtë prototip.">Shiko video udhëzuesit <span>▶</span></a>
+                <a class="video-link placeholder" href="<?= BASE_URL ?>/index.php?page=home" data-placeholder="Video udhezuesit jane placeholder ne kete prototip.">Shiko video udhezuesit <span>Ã¢â€“Â¶</span></a>
             </div>
         </div>
 
         <div class="notice portal-warning">
             <span class="warning-icon">!</span>
             <div>
-                <strong>Vëmendje</strong>
-                <p>Ju lutem të keni parasysh që platforma eKosova mund të hapet vetëm përmes adresës zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.</p>
-                <p>Çdo adresë, vegëz apo URL tjetër që nuk përfundon me rks-gov.net nuk i përket platformës eKosova dhe si e tillë nuk janë shërbime që ofrohen nga platforma shtetërore.</p>
+                <strong>Vemendje</strong>
+                <p>Ju lutem te keni parasysh qe platforma eKosova mund te hapet vetem permes adreses zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.</p>
+                <p>Ãƒâ€¡do adrese, vegez apo URL tjeter qe nuk perfundon me rks-gov.net nuk i perket platformes eKosova dhe si e tille nuk jane sherbime qe ofrohen nga platforma shteterore.</p>
             </div>
         </div>
 
         <div class="portal-stats">
             <?php foreach ([
-                ['Familja', '991.9K', 'family', '👪', 'home'],
-                ['Arsimi', '849.4K', 'education', '▰', 'education'],
-                ['Kontributet', '217.4K', 'contrib', '◔', 'home'],
-                ['Grantet', '424.9K', 'grants', '▣', 'home'],
-                ['Komunalitet', '389.7K', 'municipal', '▤', 'home'],
-                ['Vizita në platformë', '1.5B', 'visits', '●', 'home'],
+                ['Familja', '991.9K', 'family', 'Ã°Å¸â€˜Âª', 'home'],
+                ['Arsimi', '849.4K', 'education', 'Ã¢â€“Â°', 'education'],
+                ['Kontributet', '217.4K', 'contrib', 'Ã¢â€”â€', 'home'],
+                ['Grantet', '424.9K', 'grants', 'Ã¢â€“Â£', 'home'],
+                ['Komunalitet', '389.7K', 'municipal', 'Ã¢â€“Â¤', 'home'],
+                ['Vizita ne platforme', '1.5B', 'visits', 'Ã¢â€”Â', 'home'],
             ] as $cat): ?>
-                <a class="stat-card <?= e($cat[2]) ?> <?= $cat[4] === 'home' ? 'placeholder' : '' ?>" href="<?= BASE_URL ?>/index.php?page=<?= e($cat[4]) ?>" data-placeholder="Ky shërbim është placeholder në këtë prototip.">
+                <a class="stat-card <?= e($cat[2]) ?> <?= $cat[4] === 'home' ? 'placeholder' : '' ?>" href="<?= BASE_URL ?>/index.php?page=<?= e($cat[4]) ?>" data-placeholder="Ky sherbim eshte placeholder ne kete prototip.">
                     <span class="stat-icon"><?= e($cat[3]) ?></span>
                     <strong><?= e($cat[1]) ?></strong>
-                    <small><?= $cat[0] === 'Vizita në platformë' ? 'Vizita në platformë' : 'Shfrytëzime të shërbimit "' . e($cat[0]) . '"' ?></small>
+                    <small><?= $cat[0] === 'Vizita ne platforme' ? 'Vizita ne platforme' : 'Shfrytezime te sherbimit "' . e($cat[0]) . '"' ?></small>
                 </a>
             <?php endforeach; ?>
         </div>
@@ -2245,9 +2368,9 @@ function page_home(): void
         </div>
 
         <div class="steps portal-steps">
-            <article><b>1</b><h3>Krijo llogarinë tënde</h3><p>Krijoni llogarinë tuaj duke klikuar mbi "Regjistrohu" dhe duke plotësuar fushat që kërkohen. Pas krijimit të llogarisë mund të keni qasje në shërbimet elektronike.</p></article>
-            <article><b>2</b><h3>Zgjedh shërbimin</h3><p>Pasi të jeni identifikuar, zgjidhni shërbimin që ju nevojitet përmes rrjedhës Kryesore, Shërbime, Arsimi dhe Bursat.</p></article>
-            <article><b>3</b><h3>Prano shërbimin</h3><p>Pasi të zgjidhni shërbimin, plotësoni të dhënat e nevojshme dhe pranoni rezultatin në panelin tuaj.</p></article>
+            <article><b>1</b><h3>Krijo llogarine tende</h3><p>Krijoni llogarine tuaj duke klikuar mbi "Regjistrohu" dhe duke plotesuar fushat qe kerkohen. Pas krijimit te llogarise mund te keni qasje ne sherbimet elektronike.</p></article>
+            <article><b>2</b><h3>Zgjedh sherbimin</h3><p>Pasi te jeni identifikuar, zgjidhni sherbimin qe ju nevojitet permes rrjedhes Kryesore, Sherbime, Arsimi dhe Bursat.</p></article>
+            <article><b>3</b><h3>Prano sherbimin</h3><p>Pasi te zgjidhni sherbimin, plotesoni te dhenat e nevojshme dhe pranoni rezultatin ne panelin tuaj.</p></article>
         </div>
     </section>
     <?php
@@ -2274,7 +2397,7 @@ function page_home_legacy(): void
                 ['Kontribute', '217.4K', 'slate'],
             ] as $cat): ?>
                 <a class="stat-card <?= e($cat[2]) ?>" href="<?= BASE_URL ?>/index.php?page=services">
-                    <span class="icon">⌂</span>
+                    <span class="icon">Ã¢Å’â€š</span>
                     <strong><?= e($cat[1]) ?></strong>
                     <small>Shfrytezime te sherbimit "<?= e($cat[0]) ?>"</small>
                 </a>
@@ -2421,89 +2544,120 @@ function page_dashboard(): void
     <section class="panel">
         <h2>Bursat</h2>
         <?php if (!$eligibleScholarships): ?>
-            <p class="muted-text">Nuk u gjet asnjë bursë e përshtatshme për profilin tuaj aktual.</p>
-            <p class="muted-text">Mendon se të takon ndonjë bursë që nuk po shfaqet?</p>
-            <a class="btn btn-outline" href="<?= BASE_URL ?>/index.php?page=complaint">Ankohu për bursë që nuk po shfaqet</a>
+            <p class="muted-text">Nuk u gjet asnje burse e pershtatshme per profilin tuaj aktual.</p>
+            <p class="muted-text">Mendon se te takon ndonje burse qe nuk po shfaqet?</p>
+            <a class="btn btn-outline" href="<?= BASE_URL ?>/index.php?page=complaint">Ankohu per burse qe nuk po shfaqet</a>
         <?php endif; ?>
         <?php if ($winningApplication): ?>
             <?php
             $applicationReport = json_decode($winningApplication['verification_json'] ?? '[]', true);
             $applicationReport = is_array($applicationReport) ? $applicationReport : [];
             $fulfilled = isset($applicationReport['required']) ? (array) $applicationReport['required'] : $applicationReport;
-            $optionalReport = isset($applicationReport['optional']) ? (array) $applicationReport['optional'] : [];
+            $optionalReport = visible_bonus_report_items(isset($applicationReport['optional']) ? (array) $applicationReport['optional'] : []);
             $usedSections = scholarship_document_sections((int) $winningApplication['scholarship_id']);
+            $winningPointsTotal = ($winningApplication['points_total'] ?? null) !== null ? (int) $winningApplication['points_total'] : null;
+            $winningAmountLabel = scholarship_award_amount_label($winningApplication, $winningPointsTotal);
             ?>
             <article class="application-result-card">
-                <h3><?= e($winningApplication['result_message'] ?: 'Urime! Ju keni fituar bursën.') ?></h3>
+                <h3>Urime! Ju keni fituar bursen.</h3>
                 <dl class="info-list">
                     <dt>Bursa</dt><dd><?= e($winningApplication['title']) ?></dd>
                     <dt>Ofruesi</dt><dd><?= e($winningApplication['provider_name']) ?></dd>
                     <dt>Statusi</dt><dd>Fituar</dd>
                     <dt>Data e aplikimit</dt><dd><?= e($winningApplication['applied_at'] ?? $winningApplication['created_at']) ?></dd>
+                    <?php if ($winningPointsTotal !== null): ?>
+                        <dt>Piket totale</dt><dd><?= $winningPointsTotal ?></dd>
+                    <?php endif; ?>
+                    <?php if ($winningAmountLabel !== '-'): ?>
+                        <dt>Shuma e fituar</dt><dd><?= e($winningAmountLabel) ?></dd>
+                    <?php endif; ?>
                 </dl>
-                <div class="match-summary">
-                    <h4>Kriteret obligative të përmbushura</h4>
-                    <div class="chips">
-                        <?php foreach (array_slice($fulfilled, 0, 8) as $criterion): ?>
-                            <span class="ok"><?= e(($criterion['document_section'] ?? 'Profili i studentit') . ': ' . (($criterion['criterion'] ?? '') ?: ($criterion['details'] ?? 'Kriter i përmbushur')) . ' - ' . ($criterion['status_text'] ?? 'Plotësohet')) ?></span>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-                <?php if ($optionalReport): ?>
+                <details class="verification-details">
+                    <summary class="btn btn-outline">Shiko detajet e verifikimit</summary>
                     <div class="match-summary">
-                        <h4>Kriteret opsionale / pikëzuese</h4>
+                        <h4>Kriteret obligative te permbushura</h4>
                         <div class="chips">
-                            <?php foreach (array_slice($optionalReport, 0, 8) as $bonus): ?>
-                                <span class="<?= !empty($bonus['passed']) ? 'ok' : 'muted' ?>"><?= e(($bonus['document_section'] ?? 'Profili i studentit') . ': ' . (($bonus['criterion'] ?? '') ?: ($bonus['details'] ?? 'Kriter opsional')) . ' - ' . ($bonus['status_text'] ?? 'Nuk përfitohet bonus') . ' (' . (int) ($bonus['points_awarded'] ?? 0) . ' pikë)') ?></span>
+                            <?php foreach ($fulfilled as $criterion): ?>
+                                <span class="ok"><?= e(($criterion['document_section'] ?? 'Profili i studentit') . ': ' . (($criterion['criterion'] ?? '') ?: ($criterion['details'] ?? 'Kriter i permbushur')) . ' - ' . ($criterion['status_text'] ?? 'Plotesohet')) ?></span>
                             <?php endforeach; ?>
                         </div>
                     </div>
-                <?php endif; ?>
-                <div class="match-summary">
-                    <h4>Seksionet e profilit të përdorura</h4>
-                    <div class="chips">
-                        <?php foreach ($usedSections as $section): ?>
-                            <span class="muted"><?= e($section) ?></span>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            </article>
-        <?php endif; ?>
-        <div class="scholarship-list">
-            <?php foreach ($eligibleScholarships as $scholarship): ?>
-                <?php $match = $scholarship['match']; ?>
-                <?php $alreadyApplied = isset($appliedScholarshipIds[(int) $scholarship['id']]); ?>
-                <article class="scholarship-card">
-                    <div>
-                        <h3><?= e($scholarship['title']) ?></h3>
-                        <p><?= e($scholarship['provider_name'] ?? '') ?> · <?= e($scholarship['category'] ?? 'Burse') ?></p>
-                    </div>
-                    <div class="meta">
-                        <span>Afati: <?= e($scholarship['deadline'] ?? $scholarship['end_date'] ?? '-') ?></span>
-                        <span>Shuma: <?= e(number_format((float) ($scholarship['amount'] ?? 0), 2)) ?> EUR</span>
-                    </div>
-                    <div class="match-summary">
-                        <h4>Kushtet kryesore të përmbushura</h4>
-                        <div class="chips">
-                            <?php foreach (array_slice($match['fulfilled'], 0, 5) as $criterion): ?>
-                                <span class="ok"><?= e(($criterion['document_section'] ?? 'Profili') . ': ' . (($criterion['criterion'] ?? '') ?: ($criterion['details'] ?? 'Kriter')) . ' - ' . ($criterion['student_value'] ?? '')) ?></span>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                    <?php if (!empty($match['bonuses'])): ?>
+                    <?php if ($optionalReport): ?>
                         <div class="match-summary">
-                            <h4>Pikë ose përparësi</h4>
+                            <h4>Kriteret opsionale / pikezuese</h4>
                             <div class="chips">
-                                <?php foreach (array_slice($match['bonuses'], 0, 5) as $bonus): ?>
-                                    <span class="<?= !empty($bonus['passed']) ? 'ok' : 'muted' ?>"><?= e(($bonus['document_section'] ?? 'Profili') . ': ' . (($bonus['criterion'] ?? '') ?: ($bonus['details'] ?? 'Kriter opsional')) . ' - ' . ($bonus['student_value'] ?? '') . ' (' . (int) ($bonus['points_awarded'] ?? 0) . ' pikë)') ?></span>
+                                <?php foreach ($optionalReport as $bonus): ?>
+                                    <span class="<?= !empty($bonus['passed']) ? 'ok' : 'muted' ?>"><?= e(($bonus['document_section'] ?? 'Profili i studentit') . ': ' . (($bonus['criterion'] ?? '') ?: ($bonus['details'] ?? 'Kriter opsional')) . ' - ' . ($bonus['status_text'] ?? 'Nuk perfitohet bonus') . ' (' . (int) ($bonus['points_awarded'] ?? 0) . ' pike)') ?></span>
                                 <?php endforeach; ?>
                             </div>
                         </div>
                     <?php endif; ?>
+                    <div class="match-summary">
+                        <h4>Seksionet e profilit te perdorura</h4>
+                        <div class="chips">
+                            <?php foreach ($usedSections as $section): ?>
+                                <span class="muted"><?= e($section) ?></span>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </details>
+            </article>
+        <?php endif; ?>
+        <div class="scholarship-list">
+            <?php foreach ($eligibleScholarships as $scholarship): ?>
+                <?php if ($winningApplication && (int) $scholarship['id'] === (int) $winningApplication['scholarship_id']) continue; ?>
+                <?php $match = $scholarship['match']; ?>
+                <?php $alreadyApplied = isset($appliedScholarshipIds[(int) $scholarship['id']]); ?>
+                <?php $activeUsedSections = $alreadyApplied ? scholarship_document_sections((int) $scholarship['id']) : []; ?>
+                <?php $matchPointsTotal = scholarship_points_total_from_match($match); ?>
+                <?php $matchAmountLabel = scholarship_award_amount_label($scholarship, $matchPointsTotal); ?>
+                <article class="scholarship-card">
+                    <div>
+                        <h3><?= e($scholarship['title']) ?></h3>
+                        <p><?= e($scholarship['provider_name'] ?? '') ?> - <?= e($scholarship['category'] ?? 'Burse') ?></p>
+                    </div>
+                    <div class="meta">
+                        <span>Afati: <?= e($scholarship['deadline'] ?? $scholarship['end_date'] ?? '-') ?></span>
+                        <span>Piket: <?= $matchPointsTotal ?></span>
+                        <span><?= $alreadyApplied && is_kamenica_municipal_scholarship($scholarship) ? 'Shuma e fituar' : (is_kamenica_municipal_scholarship($scholarship) ? 'Shuma e pritshme' : 'Shuma') ?>: <?= e($matchAmountLabel) ?></span>
+                    </div>
+                    <p>Ju kualifikoheni per kete burse.</p>
                     <?php if ($alreadyApplied): ?>
-                        <p class="muted-text">Ju tashmë keni aplikuar për këtë bursë.</p>
+                        <p class="muted-text">Ju tashme keni aplikuar per kete burse.</p>
+                        <p class="muted-text">Statusi: Fituar</p>
+                        <details class="verification-details">
+                            <summary class="btn btn-outline">Shiko detajet</summary>
+                            <div class="match-summary">
+                                <h4>Kriteret obligative te permbushura</h4>
+                                <div class="chips">
+                                    <?php foreach ($match['fulfilled'] as $criterion): ?>
+                                        <span class="ok"><?= e(($criterion['document_section'] ?? 'Profili') . ': ' . (($criterion['criterion'] ?? '') ?: ($criterion['details'] ?? 'Kriter')) . ' - ' . ($criterion['student_value'] ?? '')) ?></span>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            <?php if (!empty($match['bonuses'])): ?>
+                                <div class="match-summary">
+                                    <h4>Kriteret opsionale / pikezuese</h4>
+                                    <div class="chips">
+                                        <?php foreach ($match['bonuses'] as $bonus): ?>
+                                            <span class="<?= !empty($bonus['passed']) ? 'ok' : 'muted' ?>"><?= e(($bonus['document_section'] ?? 'Profili') . ': ' . (($bonus['criterion'] ?? '') ?: ($bonus['details'] ?? 'Kriter opsional')) . ' - ' . ($bonus['student_value'] ?? '') . ' (' . (int) ($bonus['points_awarded'] ?? 0) . ' pike)') ?></span>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($activeUsedSections): ?>
+                                <div class="match-summary">
+                                    <h4>Seksionet e profilit te perdorura</h4>
+                                    <div class="chips">
+                                        <?php foreach ($activeUsedSections as $section): ?>
+                                            <span class="muted"><?= e($section) ?></span>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </details>
                     <?php else: ?>
-                        <form method="post" class="scholarship-apply-form" data-scholarship-title="<?= e($scholarship['title']) ?>">
+                        <form method="post" class="scholarship-apply-form" data-scholarship-title="<?= e($scholarship['title']) ?>" data-scholarship-amount="<?= e($matchAmountLabel) ?>">
                             <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                             <input type="hidden" name="action" value="apply">
                             <input type="hidden" name="scholarship_id" value="<?= (int) $scholarship['id'] ?>">
@@ -2514,7 +2668,7 @@ function page_dashboard(): void
                         <details class="rule-debug">
                             <summary>Debug matching</summary>
                             <table>
-                                <tr><th>rule_key</th><th>Kërkohet</th><th>Vlera reale</th><th>Rezultati</th></tr>
+                                <tr><th>rule_key</th><th>Kerkohet</th><th>Vlera reale</th><th>Rezultati</th></tr>
                                 <?php foreach ($match['debug'] as $debug): ?>
                                     <tr>
                                         <td><?= e($debug['rule_key']) ?></td>
@@ -2531,13 +2685,13 @@ function page_dashboard(): void
         </div>
         <?php if ($eligibleScholarships): ?>
             <div class="profile-actions">
-                <a class="btn btn-outline" href="<?= BASE_URL ?>/index.php?page=complaint">Ankohu për bursë që nuk po shfaqet</a>
+                <a class="btn btn-outline" href="<?= BASE_URL ?>/index.php?page=complaint">Ankohu per burse qe nuk po shfaqet</a>
             </div>
         <?php endif; ?>
     </section>
     <div class="application-modal" id="applicationModal" aria-live="polite" aria-hidden="true">
         <div class="application-modal-card">
-            <strong id="applicationModalTitle">Duke verifikuar të dhënat e profilit tuaj...</strong>
+            <strong id="applicationModalTitle">Duke verifikuar te dhenat e profilit tuaj...</strong>
             <p id="applicationModalText">Ju lutemi prisni pak.</p>
         </div>
     </div>
@@ -2675,17 +2829,16 @@ function page_profile(): void
 function page_services(): void
 {
     ?>
-    <section class="page-head"><h1>Shërbime</h1></section>
+    <section class="page-head"><h1>Sherbime</h1></section>
     <div class="service-grid">
-        <?php foreach (['Familja', 'Gjendja Civile', 'Arsimi', 'Shëndetësia', 'Automjetet', 'Tatimet', 'Policia', 'Kontributet'] as $service): ?>
-            <a class="service-tile <?= $service === 'Arsimi' ? '' : 'placeholder' ?>" href="<?= BASE_URL ?>/index.php?page=<?= $service === 'Arsimi' ? 'education' : 'services' ?>" data-placeholder="Ky shërbim është placeholder në këtë prototip.">
-                <span>●</span><strong><?= e($service) ?></strong><small><?= $service === 'Arsimi' ? 'Funksionale' : 'Placeholder' ?></small>
+        <?php foreach (['Familja', 'Gjendja Civile', 'Arsimi', 'Shendetesia', 'Automjetet', 'Tatimet', 'Policia', 'Kontributet'] as $service): ?>
+            <a class="service-tile <?= $service === 'Arsimi' ? '' : 'placeholder' ?>" href="<?= BASE_URL ?>/index.php?page=<?= $service === 'Arsimi' ? 'education' : 'services' ?>" data-placeholder="Ky sherbim eshte placeholder ne kete prototip.">
+                <span class="service-icon" aria-hidden="true"></span><strong><?= e($service) ?></strong><small><?= $service === 'Arsimi' ? 'Funksionale' : 'Placeholder' ?></small>
             </a>
         <?php endforeach; ?>
     </div>
     <?php
 }
-
 function page_services_legacy(): void
 {
     ?>
@@ -2693,62 +2846,59 @@ function page_services_legacy(): void
     <div class="service-grid">
         <?php foreach (['Familja', 'Gjendja Civile', 'Arsimi', 'Shendetesia', 'Automjetet', 'Tatimet', 'Policia', 'Kontribute'] as $service): ?>
             <a class="service-tile" href="<?= BASE_URL ?>/index.php?page=<?= $service === 'Arsimi' ? 'education' : 'services' ?>">
-                <span>◈</span><strong><?= e($service) ?></strong><small><?= $service === 'Arsimi' ? 'Funksionale' : 'Placeholder' ?></small>
+                <span class="service-icon" aria-hidden="true"></span><strong><?= e($service) ?></strong><small><?= $service === 'Arsimi' ? 'Funksionale' : 'Placeholder' ?></small>
             </a>
         <?php endforeach; ?>
     </div>
     <?php
 }
-
 function page_education(): void
 {
     ?>
     <section class="service-page">
-        <div class="page-head"><h1>Arsimi</h1><div class="filters">○ Për qytetarë &nbsp; ○ Për biznese &nbsp; ● Të gjitha shërbimet</div></div>
-        <div class="search-box">Kërko <span>⌕</span></div>
+        <div class="page-head"><h1>Arsimi</h1><div class="filters">&#9675; Per qytetare &nbsp; &#9675; Per biznese &nbsp; &#9679; Te gjitha sherbimet</div></div>
+        <div class="search-box">Kerko <span>&#8981;</span></div>
         <a class="service-list-item" href="<?= BASE_URL ?>/index.php?page=scholarships">
-            <span class="cap">▱</span>
+            <span class="cap">&#9649;</span>
             <strong>Bursat</strong>
             <em>Raporto problem</em>
-            <b>›</b>
+            <b>&#8250;</b>
         </a>
-        <a class="service-list-item placeholder" href="<?= BASE_URL ?>/index.php?page=education" data-placeholder="Ky shërbim është placeholder në këtë prototip.">
-            <span class="cap">▱</span>
-            <strong>Aplikimi për licencë të karrierës në mësimdhënie</strong>
+        <a class="service-list-item placeholder" href="<?= BASE_URL ?>/index.php?page=education" data-placeholder="Ky sherbim eshte placeholder ne kete prototip.">
+            <span class="cap">&#9649;</span>
+            <strong>Aplikimi per licence te karrieres ne mesimdhenie</strong>
             <em>Raporto problem</em>
-            <b>›</b>
+            <b>&#8250;</b>
         </a>
     </section>
     <?php
 }
-
 function page_education_legacy(): void
 {
     ?>
     <section class="service-page">
-        <div class="page-head"><h1>Arsimi</h1><div class="filters">○ Per qytetare &nbsp; ○ Per biznese &nbsp; ● Te gjitha sherbimet</div></div>
-        <div class="search-box">Kerko <span>⌕</span></div>
+        <div class="page-head"><h1>Arsimi</h1><div class="filters">&#9675; Per qytetare &nbsp; &#9675; Per biznese &nbsp; &#9679; Te gjitha sherbimet</div></div>
+        <div class="search-box">Kerko <span>&#8981;</span></div>
         <a class="service-list-item" href="<?= BASE_URL ?>/index.php?page=scholarships">
-            <span class="cap">▱</span>
+            <span class="cap">&#9649;</span>
             <strong>Aplikimi automatik per burse studentore</strong>
             <em>Raporto problem</em>
-            <b>›</b>
+            <b>&#8250;</b>
         </a>
         <a class="service-list-item placeholder" href="<?= BASE_URL ?>/index.php?page=education">
-            <span class="cap">▱</span>
+            <span class="cap">&#9649;</span>
             <strong>Aplikimi per licence te karrieres ne mesimdhenie</strong>
             <em>Raporto problem</em>
-            <b>›</b>
+            <b>&#8250;</b>
         </a>
     </section>
     <?php
 }
-
 function page_help(): void
 {
     ?>
     <section class="help-page">
-        <h1>Parashtroni kërkesë për ndihmë ose ankesë</h1>
+        <h1>Parashtroni kerkese per ndihme ose ankese</h1>
         <form class="help-form">
             <div class="help-form-row">
                 <label>Emri dhe mbiemri
@@ -2758,33 +2908,33 @@ function page_help(): void
                     <input name="email" type="email" autocomplete="email">
                 </label>
             </div>
-            <label class="wide">Si mund t'ju ndihmojmë?
-                <textarea name="description" placeholder="Përshkruani kërkesën ose ankesën tuaj"></textarea>
+            <label class="wide">Si mund t'ju ndihmojme?
+                <textarea name="description" placeholder="Pershkruani kerkesen ose ankesen tuaj"></textarea>
             </label>
             <div class="help-form-row help-form-row-secondary">
                 <label>Numri/reference i kerkeses
                     <input name="case_reference" placeholder="Opsionale">
                 </label>
-                <label>Zgjedh shërbimin
+                <label>Zgjedh sherbimin
                     <select name="service">
-                        <option value="">Zgjedh shërbimin</option>
+                        <option value="">Zgjedh sherbimin</option>
                         <option>Familja</option>
                         <option>Arsimi</option>
-                        <option>Shëndetësia</option>
+                        <option>Shendetesia</option>
                         <option>Kontributet</option>
                         <option>Grantet</option>
-                        <option>Tjetër</option>
+                        <option>Tjeter</option>
                     </select>
                 </label>
             </div>
             <div class="captcha-placeholder" aria-label="Captcha placeholder">
-                <span>✓</span>
+                <span>Ã¢Å“â€œ</span>
                 <strong>Success!</strong>
                 <b>Cloudflare</b>
             </div>
             <div class="help-actions">
-                <a class="btn btn-outline danger-outline" href="<?= BASE_URL ?>/index.php?page=home">Ndërpreje</a>
-                <button class="btn placeholder" type="button" data-placeholder="Kërkesa për ndihmë është placeholder në këtë prototip.">Dërgo</button>
+                <a class="btn btn-outline danger-outline" href="<?= BASE_URL ?>/index.php?page=home">Nderpreje</a>
+                <button class="btn placeholder" type="button" data-placeholder="Kerkesa per ndihme eshte placeholder ne kete prototip.">Dergo</button>
             </div>
         </form>
     </section>
@@ -2794,30 +2944,30 @@ function page_help(): void
 function page_info(): void
 {
     $items = [
-        ['Shërbimet në nivel qendror', '▥'],
-        ['Shërbimet në nivel lokal', '▦'],
-        ['Benefitet dhe asistenca', '♧'],
-        ['Lëvizja dhe komunikimi', '↻'],
-        ['Familja', '♟'],
-        ['Siguria', '◆'],
-        ['Shëndetësia', '♡'],
-        ['Ambienti dhe natyra', '♠'],
-        ['Dokumentet', '✎'],
-        ['Diaspora', '◉'],
-        ['Puna dhe biznesi', '▰'],
-        ['Udhëzuesit', 'ⓘ'],
+        ['Sherbimet ne nivel qendror', 'Ã¢â€“Â¥'],
+        ['Sherbimet ne nivel lokal', 'Ã¢â€“Â¦'],
+        ['Benefitet dhe asistenca', 'Ã¢â„¢Â§'],
+        ['Levizja dhe komunikimi', 'Ã¢â€ Â»'],
+        ['Familja', 'Ã¢â„¢Å¸'],
+        ['Siguria', 'Ã¢â€”â€ '],
+        ['Shendetesia', 'Ã¢â„¢Â¡'],
+        ['Ambienti dhe natyra', 'Ã¢â„¢Â '],
+        ['Dokumentet', 'Ã¢Å“Å½'],
+        ['Diaspora', 'Ã¢â€”â€°'],
+        ['Puna dhe biznesi', 'Ã¢â€“Â°'],
+        ['Udhezuesit', 'Ã¢â€œËœ'],
     ];
     ?>
     <section class="info-page">
         <div class="info-head">
             <h1>Informata</h1>
-            <button class="info-filter placeholder" type="button" data-placeholder="Filtrat janë placeholder në këtë prototip."><span>☷</span> Të gjitha <b>⌄</b></button>
+            <button class="info-filter placeholder" type="button" data-placeholder="Filtrat jane placeholder ne kete prototip."><span>Ã¢ËœÂ·</span> Te gjitha <b>Ã¢Å’â€ž</b></button>
         </div>
 
         <div class="info-grid">
             <?php foreach ($items as [$title, $icon]): ?>
-                <a class="info-tile placeholder" href="<?= BASE_URL ?>/index.php?page=info" data-placeholder="Kjo informatë është placeholder në këtë prototip.">
-                    <span><?= e($icon) ?></span>
+                <a class="info-tile placeholder" href="<?= BASE_URL ?>/index.php?page=info" data-placeholder="Kjo informate eshte placeholder ne kete prototip.">
+                    <span class="info-icon" aria-hidden="true"></span>
                     <strong><?= e($title) ?></strong>
                 </a>
             <?php endforeach; ?>
@@ -2845,19 +2995,25 @@ function page_scholarships(): void
     <div class="scholarship-list">
         <?php if ($isStudent && !$scholarships): ?>
             <article class="scholarship-card">
-                <h2>Nuk u gjet asnjë bursë e përshtatshme për profilin tuaj aktual.</h2>
-                <p>Mendon se të takon ndonjë bursë që nuk po shfaqet?</p>
-                <a class="btn btn-outline" href="<?= BASE_URL ?>/index.php?page=complaint">Ankohu për bursë që nuk po shfaqet</a>
+                <h2>Nuk u gjet asnje burse e pershtatshme per profilin tuaj aktual.</h2>
+                <p>Mendon se te takon ndonje burse qe nuk po shfaqet?</p>
+                <a class="btn btn-outline" href="<?= BASE_URL ?>/index.php?page=complaint">Ankohu per burse qe nuk po shfaqet</a>
             </article>
         <?php endif; ?>
         <?php foreach ($scholarships as $s): ?>
+            <?php $matchPointsTotal = isset($s['match']) ? scholarship_points_total_from_match($s['match']) : null; ?>
+            <?php $amountLabel = scholarship_award_amount_label($s, $matchPointsTotal); ?>
             <article class="scholarship-card">
                 <h2><?= e($s['title']) ?></h2>
                 <p><?= e($s['description']) ?></p>
                 <div class="meta">
                     <span>Ofruesi: <?= e($s['provider_name']) ?></span>
                     <span>Kategoria: <?= e($s['category'] ?? 'Burse') ?></span>
-                    <span>Shuma: <?= e(number_format((float) $s['amount'], 2)) ?> EUR</span>
+                    <?php if ($matchPointsTotal !== null): ?>
+                        <span>Piket: <?= $matchPointsTotal ?></span>
+                    <?php endif; ?>
+                    <?php $isApplied = $isStudent && isset($appliedScholarshipIds[(int) $s['id']]); ?>
+                    <span><?= $isApplied && is_kamenica_municipal_scholarship($s) ? 'Shuma e fituar' : (is_kamenica_municipal_scholarship($s) && $matchPointsTotal !== null ? 'Shuma e pritshme' : 'Shuma') ?>: <?= e($amountLabel) ?></span>
                     <span>Afati: <?= e($s['deadline']) ?></span>
                 </div>
                 <div class="criteria">
@@ -2865,27 +3021,27 @@ function page_scholarships(): void
                 </div>
                 <?php if ($isStudent && isset($s['match'])): ?>
                     <div class="match-summary">
-                        <h4>Kushtet kryesore të përmbushura</h4>
+                        <h4>Kushtet kryesore te permbushura</h4>
                         <div class="chips">
-                            <?php foreach (array_slice($s['match']['fulfilled'], 0, 5) as $fulfilled): ?>
+                            <?php foreach ($s['match']['fulfilled'] as $fulfilled): ?>
                                 <span class="ok"><?= e(($fulfilled['document_section'] ?? 'Profili') . ': ' . (($fulfilled['criterion'] ?? '') ?: ($fulfilled['details'] ?? 'Kriter')) . ' - ' . ($fulfilled['student_value'] ?? '')) ?></span>
                             <?php endforeach; ?>
                         </div>
                         <?php if (!empty($s['match']['bonuses'])): ?>
-                            <h4>Pikët ose përparësitë</h4>
+                            <h4>Piket ose perparesite</h4>
                             <div class="chips">
-                                <?php foreach (array_slice($s['match']['bonuses'], 0, 5) as $bonus): ?>
-                                    <span class="<?= !empty($bonus['passed']) ? 'ok' : 'muted' ?>"><?= e(($bonus['document_section'] ?? 'Profili') . ': ' . (($bonus['criterion'] ?? '') ?: ($bonus['details'] ?? 'Kriter opsional')) . ' - ' . ($bonus['student_value'] ?? '') . ' (' . (int) ($bonus['points_awarded'] ?? 0) . ' pikë)') ?></span>
+                                <?php foreach ($s['match']['bonuses'] as $bonus): ?>
+                                    <span class="<?= !empty($bonus['passed']) ? 'ok' : 'muted' ?>"><?= e(($bonus['document_section'] ?? 'Profili') . ': ' . (($bonus['criterion'] ?? '') ?: ($bonus['details'] ?? 'Kriter opsional')) . ' - ' . ($bonus['student_value'] ?? '') . ' (' . (int) ($bonus['points_awarded'] ?? 0) . ' pike)') ?></span>
                                 <?php endforeach; ?>
                             </div>
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>
                 <?php if ($isStudent): ?>
-                    <?php if (isset($appliedScholarshipIds[(int) $s['id']])): ?>
-                        <p class="muted-text">Ju tashmë keni aplikuar për këtë bursë.</p>
+                    <?php if ($isApplied): ?>
+                        <p class="muted-text">Ju tashme keni aplikuar per kete burse.</p>
                     <?php else: ?>
-                        <form method="post" class="scholarship-apply-form" data-scholarship-title="<?= e($s['title']) ?>">
+                        <form method="post" class="scholarship-apply-form" data-scholarship-title="<?= e($s['title']) ?>" data-scholarship-amount="<?= e($amountLabel) ?>">
                             <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                             <input type="hidden" name="action" value="apply">
                             <input type="hidden" name="scholarship_id" value="<?= (int) $s['id'] ?>">
@@ -2899,7 +3055,7 @@ function page_scholarships(): void
     <?php if ($isStudent): ?>
         <div class="application-modal" id="applicationModal" aria-live="polite" aria-hidden="true">
             <div class="application-modal-card">
-                <strong id="applicationModalTitle">Duke verifikuar të dhënat e profilit tuaj...</strong>
+                <strong id="applicationModalTitle">Duke verifikuar te dhenat e profilit tuaj...</strong>
                 <p id="applicationModalText">Ju lutemi prisni pak.</p>
             </div>
         </div>
@@ -2959,13 +3115,13 @@ function page_admin(): void
 {
     require_role(['admin']);
     ensure_scholarship_template_schema();
-    $users = db()->query('SELECT * FROM users ORDER BY role, name')->fetchAll();
-    $providers = db()->query('SELECT id, name, provider_type FROM users WHERE role = "provider" AND is_active = 1 ORDER BY name')->fetchAll();
-    $scholarships = db()->query('SELECT s.*, COALESCE(s.provider_name, u.name) provider_name FROM scholarships s LEFT JOIN users u ON u.id=s.provider_id ORDER BY s.created_at DESC')->fetchAll();
-    $applications = db()->query('SELECT a.*, st.name student_name, s.title FROM applications a JOIN users st ON st.id=a.student_id JOIN scholarships s ON s.id=a.scholarship_id ORDER BY a.created_at DESC')->fetchAll();
-    $complaints = db()->query('SELECT c.*, u.name student_name, COALESCE(s.title, c.provider_name) scholarship_title FROM complaints c JOIN users u ON u.id=c.student_id LEFT JOIN applications a ON a.id=c.application_id LEFT JOIN scholarships s ON s.id=a.scholarship_id ORDER BY c.created_at DESC')->fetchAll();
+    $users = db()->query('SELECT * FROM users ORDER BY role, name')->fetchAll() ?: [];
+    $providers = db()->query('SELECT id, name, provider_type FROM users WHERE role = "provider" AND is_active = 1 ORDER BY name')->fetchAll() ?: [];
+    $scholarships = db()->query('SELECT s.*, COALESCE(s.provider_name, u.name) provider_name FROM scholarships s LEFT JOIN users u ON u.id=s.provider_id ORDER BY s.created_at DESC')->fetchAll() ?: [];
+    $applications = db()->query('SELECT a.*, st.name student_name, s.title FROM applications a JOIN users st ON st.id=a.student_id JOIN scholarships s ON s.id=a.scholarship_id ORDER BY a.created_at DESC')->fetchAll() ?: [];
+    $complaints = db()->query('SELECT c.*, u.name student_name, COALESCE(s.title, c.provider_name) scholarship_title FROM complaints c JOIN users u ON u.id=c.student_id LEFT JOIN applications a ON a.id=c.application_id LEFT JOIN scholarships s ON s.id=a.scholarship_id ORDER BY c.created_at DESC')->fetchAll() ?: [];
     $analytics = analytics_data();
-    $templatePayload = admin_scholarship_template_payload();
+    $templatePayload = admin_scholarship_template_payload() ?: [];
     ?>
     <section class="page-head">
         <h1>Paneli i administratorit</h1>
@@ -2984,9 +3140,9 @@ function page_admin(): void
     </section>
     <section class="panel"><h2>Perdoruesit</h2><table><tr><th>Emri</th><th>Username</th><th>Roli</th><th>Tipi</th><th></th></tr><?php foreach ($users as $u): ?><tr><td><?= e($u['name']) ?></td><td><?= e($u['username']) ?></td><td><?= e($u['role']) ?></td><td><?= e($u['provider_type']) ?></td><td><form method="post"><input type="hidden" name="csrf_token" value="<?= csrf_token() ?>"><input type="hidden" name="action" value="admin_delete_user"><input type="hidden" name="id" value="<?= (int) $u['id'] ?>"><button class="link danger">Fshi</button></form></td></tr><?php endforeach; ?></table></section>
     <section class="panel">
-        <h2>Shto bursë</h2>
+        <h2>Shto burse</h2>
         <?php if (!$providers): ?>
-            <p class="muted-text">Nuk ka ofrues aktivë. Shtoni fillimisht një përdorues me rolin Ofrues.</p>
+            <p class="muted-text">Nuk ka ofrues aktive. Shtoni fillimisht nje perdorues me rolin Ofrues.</p>
         <?php else: ?>
             <form method="post" class="form scholarship-template-form" id="adminScholarshipForm" data-templates="<?= e((string) json_encode($templatePayload, JSON_UNESCAPED_UNICODE)) ?>">
                 <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
@@ -3034,7 +3190,7 @@ function page_admin(): void
                     <h3>1. Te dhenat baze te burses</h3>
                     <div class="form-section-grid">
                         <label>Titulli<input name="title" id="scholarshipTitle" required></label>
-                        <label>Shuma EUR<input type="number" name="amount" step="0.01" min="1" value="500" required></label>
+                        <label>Shuma EUR<input type="text" name="amount" id="scholarshipAmount" value="500" required></label>
                         <label>Statusi<select name="status"><option value="active">Aktive</option><option value="inactive">Jo aktive</option></select></label>
                         <label>Nota minimale<input type="number" min="6" max="10" step="0.01" name="min_grade" id="legacyMinGrade"></label>
                         <label>Universiteti<select name="required_university" id="legacyUniversity"><option value="">Cilido</option><option>Universiteti Kadri Zeka</option><option>Universiteti Hasan Prishtina</option><option>Universiteti Haxhi Zeka</option></select></label>
@@ -3078,8 +3234,8 @@ function page_admin(): void
         <?php endif; ?>
     </section>
     <section class="panel"><h2>Bursat</h2><table><tr><th>Titulli</th><th>Ofruesi</th><th>Kategoria</th><th>Statusi</th><th></th></tr><?php foreach ($scholarships as $s): ?><tr><td><?= e($s['title']) ?></td><td><?= e($s['provider_name']) ?></td><td><?= e($s['category'] ?? '-') ?></td><td><form method="post" class="mini-form"><input type="hidden" name="csrf_token" value="<?= csrf_token() ?>"><input type="hidden" name="action" value="update_scholarship_status"><input type="hidden" name="id" value="<?= (int) $s['id'] ?>"><select name="status"><option value="active" <?= selected('active', $s['status']) ?>>Aktive</option><option value="inactive" <?= selected('inactive', $s['status']) ?>>Jo aktive</option></select><button class="btn small">Ruaj</button></form></td><td><form method="post"><input type="hidden" name="csrf_token" value="<?= csrf_token() ?>"><input type="hidden" name="action" value="delete_scholarship"><input type="hidden" name="id" value="<?= (int) $s['id'] ?>"><button class="link danger">Fshi</button></form></td></tr><?php endforeach; ?></table></section>
-    <section class="panel"><h2>Aplikimet</h2><table><tr><th>Studenti</th><th>Bursa</th><th>Statusi</th><th>Data</th></tr><?php foreach ($applications as $a): ?><tr><td><?= e($a['student_name']) ?></td><td><?= e($a['title']) ?></td><td><?= status_label($a['status']) ?></td><td><?= e($a['applied_at'] ?? $a['created_at']) ?></td></tr><?php endforeach; ?></table></section>
-    <section class="panel"><h2>Ankesat</h2><table><tr><th>Studenti</th><th>Kategoria</th><th>Ofruesi/Bursa</th><th>Pershkrimi</th><th>Arsyeja</th><th>Statusi</th></tr><?php foreach ($complaints as $c): ?><tr><td><?= e($c['student_name']) ?></td><td><?= e($c['scholarship_category'] ?? '-') ?></td><td><?= e($c['scholarship_title'] ?: ($c['provider_name'] ?? '-')) ?></td><td><?= e($c['message']) ?></td><td><?= e($c['reason'] ?? '') ?></td><td><form method="post" class="mini-form"><input type="hidden" name="csrf_token" value="<?= csrf_token() ?>"><input type="hidden" name="action" value="admin_update_complaint"><input type="hidden" name="id" value="<?= (int) $c['id'] ?>"><select name="status"><option value="pending" <?= selected('pending', $c['status']) ?>>Në pritje</option><option value="reviewing" <?= selected('reviewing', $c['status']) ?>>Në shqyrtim</option><option value="accepted" <?= selected('accepted', $c['status']) ?>>E pranuar</option><option value="rejected" <?= selected('rejected', $c['status']) ?>>E refuzuar</option></select><button class="btn small">Ruaj</button></form></td></tr><?php endforeach; ?></table></section>
+    <section class="panel"><h2>Aplikimet</h2><table><tr><th>Studenti</th><th>Bursa</th><th>Statusi</th><th>Data</th><th></th></tr><?php foreach ($applications as $a): ?><tr><td><?= e($a['student_name']) ?></td><td><?= e($a['title']) ?></td><td><?= status_label($a['status']) ?></td><td><?= e($a['applied_at'] ?? $a['created_at']) ?></td><td><form method="post"><input type="hidden" name="csrf_token" value="<?= csrf_token() ?>"><input type="hidden" name="action" value="admin_delete_application"><input type="hidden" name="id" value="<?= (int) $a['id'] ?>"><button class="link danger">Fshi</button></form></td></tr><?php endforeach; ?></table></section>
+    <section class="panel"><h2>Ankesat</h2><table><tr><th>Studenti</th><th>Kategoria</th><th>Ofruesi/Bursa</th><th>Pershkrimi</th><th>Arsyeja</th><th>Statusi</th></tr><?php foreach ($complaints as $c): ?><tr><td><?= e($c['student_name']) ?></td><td><?= e($c['scholarship_category'] ?? '-') ?></td><td><?= e($c['scholarship_title'] ?: ($c['provider_name'] ?? '-')) ?></td><td><?= e($c['message']) ?></td><td><?= e($c['reason'] ?? '') ?></td><td><form method="post" class="mini-form"><input type="hidden" name="csrf_token" value="<?= csrf_token() ?>"><input type="hidden" name="action" value="admin_update_complaint"><input type="hidden" name="id" value="<?= (int) $c['id'] ?>"><select name="status"><option value="pending" <?= selected('pending', $c['status']) ?>>Ne pritje</option><option value="reviewing" <?= selected('reviewing', $c['status']) ?>>Ne shqyrtim</option><option value="accepted" <?= selected('accepted', $c['status']) ?>>E pranuar</option><option value="rejected" <?= selected('rejected', $c['status']) ?>>E refuzuar</option></select><button class="btn small">Ruaj</button></form></td></tr><?php endforeach; ?></table></section>
     <?php
 }
 
@@ -3118,23 +3274,23 @@ function analytics_data(): array
                 'tone' => 'teal',
             ],
             [
-                'label' => 'Reduktimi i hapave proceduralë',
+                'label' => 'Reduktimi i hapave procedurale',
                 'before' => $traditionalSteps . ' hapa',
                 'after' => '2-3 hapa',
                 'percent' => percentage_reduction($traditionalSteps, $ekosovaSteps),
                 'tone' => 'blue',
             ],
             [
-                'label' => 'Reduktimi i kohës së aplikimit',
-                'before' => '4 ditë',
+                'label' => 'Reduktimi i kohes se aplikimit',
+                'before' => '4 dite',
                 'after' => '3 sekonda pas klikimit',
                 'percent' => percentage_reduction($traditionalSeconds, $ekosovaSeconds),
                 'tone' => 'green',
             ],
             [
                 'label' => 'Eliminimi i refuzimit manual',
-                'before' => 'Listim i plotë dhe refuzim manual',
-                'after' => 'Shfaqen vetëm bursat e përshtatshme',
+                'before' => 'Listim i plote dhe refuzim manual',
+                'after' => 'Shfaqen vetem bursat e pershtatshme',
                 'percent' => 100.0,
                 'tone' => 'purple',
             ],
@@ -3142,19 +3298,19 @@ function analytics_data(): array
         'counts' => analytics_counts(),
         'optimization_sources' => [
             'Eliminimi i dokumenteve fizike/PDF.',
-            'Zëvendësimi i dokumenteve me seksione të profilit.',
-            'Matching automatik student-bursë.',
-            'Shfaqja vetëm e bursave të përshtatshme.',
+            'Zevendesimi i dokumenteve me seksione te profilit.',
+            'Matching automatik student-burse.',
+            'Shfaqja vetem e bursave te pershtatshme.',
             'Eliminimi i refuzimit manual.',
-            'Aplikimi me një klikim.',
+            'Aplikimi me nje klikim.',
             'Fitimi/simulimi pas 3 sekondash.',
         ],
         'comparison' => [
             ['Procesi', 'Procesi tradicional', 'Procesi me EKosova+'],
-            ['Pikat e kontaktit', '5 institucione fizike', '1 platformë'],
+            ['Pikat e kontaktit', '5 institucione fizike', '1 platforme'],
             ['Hapat', '10 hapa', '2-3 hapa'],
             ['Dokumentet', '6 dokumente', '0 dokumente fizike'],
-            ['Koha', '4 ditë', '3 sekonda pas klikimit'],
+            ['Koha', '4 dite', '3 sekonda pas klikimit'],
         ],
     ];
 }
@@ -3220,22 +3376,22 @@ function render_analytics_summary(array $analytics): void
         <div class="analytics-summary-head">
             <div>
                 <h2>Analitika e Optimizimit</h2>
-                <p class="muted-text">Krahasim i shpejtë i procesit tradicional me rrjedhën EKosova+.</p>
+                <p class="muted-text">Krahasim i shpejte i procesit tradicional me rrjedhen EKosova+.</p>
             </div>
-            <a class="btn small" href="<?= BASE_URL ?>/index.php?page=analytics">Hap analitikën</a>
+            <a class="btn small" href="<?= BASE_URL ?>/index.php?page=analytics">Hap analitiken</a>
         </div>
         <div class="analytics-mini-grid">
             <article>
                 <span><?= percent_label($analytics['metrics'][0]['percent']) ?></span>
-                <small>më pak dokumente fizike</small>
+                <small>me pak dokumente fizike</small>
             </article>
             <article>
                 <span><?= percent_label($analytics['metrics'][3]['percent']) ?></span>
-                <small>më pak kohë aplikimi</small>
+                <small>me pak kohe aplikimi</small>
             </article>
             <article>
                 <span><?= (int) $counts['won_applications'] ?></span>
-                <small>aplikime të fituara</small>
+                <small>aplikime te fituara</small>
             </article>
             <article>
                 <span><?= (int) $counts['total_complaints'] ?></span>
@@ -3253,11 +3409,11 @@ function render_analytics_page(array $analytics): void
     <section class="page-head">
         <div>
             <h1>Analitika e Optimizimit</h1>
-            <p class="muted-text">Optimizimi vjen nga eliminimi i dokumenteve fizike/PDF, zëvendësimi i tyre me seksione të profilit, matching automatik student-bursë, shfaqja vetëm e bursave të përshtatshme, eliminimi i refuzimit manual, aplikimi me një klikim dhe fitimi/simulimi pas 3 sekondash.</p>
+            <p class="muted-text">Optimizimi vjen nga eliminimi i dokumenteve fizike/PDF, zevendesimi i tyre me seksione te profilit, matching automatik student-burse, shfaqja vetem e bursave te pershtatshme, eliminimi i refuzimit manual, aplikimi me nje klikim dhe fitimi/simulimi pas 3 sekondash.</p>
             <p class="muted-text">Formula: Optimizimi = ((Vlera tradicionale - Vlera EKosova+) / Vlera tradicionale) * 100.</p>
         </div>
         <div class="profile-actions">
-            <a class="btn" href="<?= e(admin_file_url('export-analytics.php')) ?>">Eksporto në Excel</a>
+            <a class="btn" href="<?= e(admin_file_url('export-analytics.php')) ?>">Eksporto ne Excel</a>
             <a class="btn btn-outline" href="<?= BASE_URL ?>/index.php?page=admin">Kthehu te admini</a>
         </div>
     </section>
@@ -3291,13 +3447,13 @@ function render_analytics_page(array $analytics): void
             <div class="analytics-mini-grid count-grid">
                 <article><span><?= (int) $counts['active_scholarships'] ?></span><small>Bursa aktive</small></article>
                 <article><span><?= (int) $counts['total_applications'] ?></span><small>Total aplikime</small></article>
-                <article><span><?= (int) $counts['won_applications'] ?></span><small>Të fituara</small></article>
+                <article><span><?= (int) $counts['won_applications'] ?></span><small>Te fituara</small></article>
                 <article><span><?= (int) $counts['total_complaints'] ?></span><small>Ankesa</small></article>
             </div>
         </article>
 
         <article class="panel">
-            <h2>Grafik i thjeshtë</h2>
+            <h2>Grafik i thjeshte</h2>
             <div class="simple-chart" role="img" aria-label="Krahasim i reduktimeve kryesore">
                 <?php foreach (array_slice($analytics['metrics'], 0, 4) as $metric): ?>
                     <div class="chart-row">
@@ -3339,20 +3495,20 @@ function page_complaint(): void
     require_role(['student']);
     $applicationId = (int) ($_GET['application_id'] ?? 0);
     $providers = [
-        'Bursë komunale' => ['Komuna e Kamenicës', 'Komuna e Gjilanit', 'Komuna e Vitisë', 'Komuna e Ferizajit'],
-        'Bursë universitare' => ['Universiteti “Kadri Zeka”', 'Universiteti i Prishtinës', 'Universiteti “Haxhi Zeka”'],
-        'Bursë humanitare nga OJQ' => ['OJQ TOKA', 'AMIK', 'VILDANA Foundation'],
+        'Burse komunale' => ['Komuna e Kamenices', 'Komuna e Gjilanit', 'Komuna e Vitise', 'Komuna e Ferizajit'],
+        'Burse universitare' => ['Universiteti Ã¢â‚¬Å“Kadri ZekaÃ¢â‚¬Â', 'Universiteti i Prishtines', 'Universiteti Ã¢â‚¬Å“Haxhi ZekaÃ¢â‚¬Â'],
+        'Burse humanitare nga OJQ' => ['OJQ TOKA', 'AMIK', 'VILDANA Foundation'],
     ];
     ?>
     <section class="auth-panel narrow">
-        <h1>Ankohu për bursë që nuk po shfaqet</h1>
+        <h1>Ankohu per burse qe nuk po shfaqet</h1>
         <form method="post" class="form">
             <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
             <input type="hidden" name="action" value="complaint">
             <input type="hidden" name="application_id" value="<?= $applicationId ?>">
-            <label>Kategoria e bursës
+            <label>Kategoria e burses
                 <select name="scholarship_category" required>
-                    <option value="">Zgjedh kategorinë</option>
+                    <option value="">Zgjedh kategorine</option>
                     <?php foreach (array_keys($providers) as $category): ?>
                         <option value="<?= e($category) ?>"><?= e($category) ?></option>
                     <?php endforeach; ?>
@@ -3368,10 +3524,10 @@ function page_complaint(): void
                     <?php endforeach; ?>
                 </select>
             </label>
-            <label>Përshkrimi i ankesës<textarea name="message" required></textarea></label>
-            <label>Arsyeja pse mendon se të takon bursa<textarea name="reason" required></textarea></label>
-            <p class="warning-note">Vërejtje: Paraqitja e ankesave të pavërteta ose keqpërdorimi i sistemit mund të sjellë përgjegjësi ligjore, duke përfshirë dënim deri në 1 vit burgim, sipas dispozitave përkatëse ligjore.</p>
-            <button class="btn">Dërgo ankesën</button>
+            <label>Pershkrimi i ankeses<textarea name="message" required></textarea></label>
+            <label>Arsyeja pse mendon se te takon bursa<textarea name="reason" required></textarea></label>
+            <p class="warning-note">Verejtje: Paraqitja e ankesave te paverteta ose keqperdorimi i sistemit mund te sjelle pergjegjesi ligjore, duke perfshire denim deri ne 1 vit burgim, sipas dispozitave perkatese ligjore.</p>
+            <button class="btn">Dergo ankesen</button>
         </form>
     </section>
     <?php
@@ -3417,7 +3573,7 @@ function render_structured_student_documents(array $profile, string $firstName, 
                                 <span class="document-required-note"><?= e($section['required_note']) ?></span>
                             <?php endif; ?>
                         </div>
-                        <button class="section-edit-button" type="button" aria-label="Ndrysho <?= e($section['title']) ?>" title="Ndrysho">✎</button>
+                        <button class="section-edit-button" type="button" aria-label="Ndrysho <?= e($section['title']) ?>" title="Ndrysho">Ã¢Å“Å½</button>
                     </div>
                     <div class="document-verification-line">
                         <span class="badge ok">Verifikuar</span>
@@ -3522,7 +3678,7 @@ function student_document_section_definitions(array $profile, string $firstName 
             field_def('war_martyr', 'Martir i luftes', 'yesno', document_data_value($documents, 'war_category_confirmation', 'war_martyr', 'jo')),
         ], 'Te dhenat jane te pranuara, autentifikuara dhe licencuara nga institucioni perkates per kategorite e dala nga lufta.', $documents['war_category_confirmation'] ?? []),
         'parent_death_certificate' => document_section('Certifikata e Vdekjes se Prinderve', [
-            field_def('one_parent_missing', 'Pa njërin prind', 'yesno', !empty($profile['is_orphan']) ? 'po' : 'jo'),
+            field_def('one_parent_missing', 'Pa njerin prind', 'yesno', !empty($profile['is_orphan']) ? 'po' : 'jo'),
             field_def('two_parents_missing', 'Pa dy prinder', 'yesno', document_data_value($documents, 'parent_death_certificate', 'two_parents_missing', 'jo')),
         ], 'Te dhenat jane te pranuara, autentifikuara dhe licencuara nga Agjencia e Regjistrimit Civil.', $documents['parent_death_certificate'] ?? [], 'Opsional, perdoret vetem per bursa ku jep pike/perparesi.'),
         'special_needs_confirmation' => document_section('Vertetimi per Nevoja te Vecanta', [
@@ -3993,7 +4149,7 @@ function render_section_header(string $title, ?string $note = null): void
     ?>
     <div class="section-card-head">
         <h2><?= e(t($title)) ?><?= $note ? ' <span>(' . e(t($note)) . ')</span>' : '' ?></h2>
-        <button class="section-edit-button" type="button" aria-label="<?= e(t('edit')) ?> <?= e(t($title)) ?>">✎</button>
+        <button class="section-edit-button" type="button" aria-label="<?= e(t('edit')) ?> <?= e(t($title)) ?>">Ã¢Å“Å½</button>
     </div>
     <?php
 }
@@ -4043,7 +4199,7 @@ function criteria_text(array $s): string
     if ($s['requires_veteran_child']) $items[] = 'Femije veterani';
     if ($s['requires_orphan']) $items[] = 'Jetim';
     if ($s['requires_social_assistance']) $items[] = 'Ndihme sociale';
-    return $items ? implode(' · ', $items) : 'Pa kritere shtese';
+    return $items ? implode(' Ã‚Â· ', $items) : 'Pa kritere shtese';
 }
 
 function profile_field(string $label, ?string $value, bool $wide = false): void
@@ -4094,6 +4250,50 @@ function money_label(mixed $value): string
     }
 
     return number_format((float) $value, 2) . ' EUR';
+}
+
+function normalize_text(string $value): string
+{
+    return strtolower(trim(normalize_ui_text($value)));
+}
+
+function is_kamenica_municipal_scholarship(array $scholarship): bool
+{
+    $category = normalize_text((string) ($scholarship['category'] ?? ''));
+    $providerName = normalize_text((string) ($scholarship['provider_name'] ?? ''));
+
+    return str_contains($category, 'burse komunale')
+        && str_contains($providerName, 'komuna e kamenic');
+}
+
+function scholarship_amount_label(array $scholarship): string
+{
+    if (is_kamenica_municipal_scholarship($scholarship)) {
+        return 'varet nga piket';
+    }
+
+    return money_label($scholarship['amount'] ?? null);
+}
+
+function scholarship_points_total_from_match(array $match): int
+{
+    return array_sum(array_map(
+        fn($bonus) => (int) ($bonus['points_awarded'] ?? 0),
+        is_array($match['bonuses'] ?? null) ? $match['bonuses'] : []
+    ));
+}
+
+function scholarship_award_amount_label(array $scholarship, ?int $pointsTotal = null): string
+{
+    if (!is_kamenica_municipal_scholarship($scholarship)) {
+        return scholarship_amount_label($scholarship);
+    }
+
+    if ($pointsTotal === null) {
+        return scholarship_amount_label($scholarship);
+    }
+
+    return money_label($pointsTotal * 10);
 }
 
 function document_status_label(string $status): string
@@ -4286,3 +4486,4 @@ function allowed_value(string $value, array $allowed, string $default): string
 {
     return in_array($value, $allowed, true) ? $value : $default;
 }
+
