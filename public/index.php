@@ -136,7 +136,7 @@ function translations_for(string $lang): array
         'Vemendje' => 'Attention',
         'Ju lutem te keni parasysh qe platforma eKosova mund te hapet vetem permes adreses zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.' => 'Please note that the eKosova platform can only be accessed through the official address https://ekosova.rks-gov.net and https://rks-gov.net.',
         'Ju lutem te keni parasysh qe platforma eKosova mund te hapet vetem permes adreses zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.' => 'Please note that the eKosova platform can only be accessed through the official address https://ekosova.rks-gov.net and https://rks-gov.net.',
-        'Ãƒâ€¡do adrese, vegez apo URL tjeter qe nuk perfundon me rks-gov.net nuk i perket platformes eKosova dhe si e tille nuk jane sherbime qe ofrohen nga platforma shteterore.' => 'Any other address, link, or URL that does not end with rks-gov.net does not belong to the eKosova platform and is not a service offered by the state platform.',
+        'cfaredo adrese, vegez apo URL tjeter qe nuk perfundon me rks-gov.net nuk i perket platformes eKosova dhe si e tille nuk jane sherbime qe ofrohen nga platforma shteterore.' => 'Any other address, link, or URL that does not end with rks-gov.net does not belong to the eKosova platform and is not a service offered by the state platform.',
         'Cdo adrese, vegez apo URL tjeter qe nuk perfundon me rks-gov.net nuk i perket platformes eKosova dhe si e tille nuk jane sherbime qe ofrohen nga platforma shteterore.' => 'Any other address, link, or URL that does not end with rks-gov.net does not belong to the eKosova platform and is not a service offered by the state platform.',
         'Familja' => 'Family',
         'Kontributet' => 'Contributions',
@@ -255,158 +255,7 @@ function translations_for(string $lang): array
         'Webmail eshte placeholder ne kete prototip.' => 'Webmail is a placeholder in this prototype.',
     ];
 
-    $sr = [
-        'Ndihme' => 'PomoÃ„â€¡',
-        'Ndihme' => 'PomoÃ„â€¡',
-        'Vegzat' => 'Linkovi',
-        'Gjuha:' => 'Jezik:',
-        'Shqi' => 'Alb',
-        'Eng' => 'Eng',
-        'Srb' => 'Srp',
-        'Kryesore' => 'PoÃ„Âetna',
-        'Sherbime' => 'Usluge',
-        'Sherbime' => 'Usluge',
-        'Arsimi' => 'Obrazovanje',
-        'Bursat' => 'Stipendije',
-        'Informata' => 'Informacije',
-        'Njoftimet' => 'ObaveÃ…Â¡tenja',
-        'Te dhenat e mia' => 'Moji podaci',
-        'Paneli' => 'Panel',
-        'Dil' => 'Odjavi se',
-        'Platforma e sherbimeve online' => 'Platforma online usluga',
-        'Platforma e sherbimeve online' => 'Platforma online usluga',
-        'eKosova eshte platforme shteterore ku sherbimet publike qe gjenden ne zyrat dhe sportelet fizike te institucioneve ofrohen ne menyre elektronike.' => 'eKosova je drÃ…Â¾avna platforma na kojoj se javne usluge iz kancelarija i Ã…Â¡altera institucija nude elektronski.',
-        'eKosova eshte platforme shteterore ku sherbimet publike qe gjenden ne zyrat dhe sportelet fizike te institucioneve ofrohen ne menyre elektronike.' => 'eKosova je drÃ…Â¾avna platforma na kojoj se javne usluge iz kancelarija i Ã…Â¡altera institucija nude elektronski.',
-        'Regjistrohu' => 'Registruj se',
-        'Hyr' => 'Prijavi se',
-        'Kerko sherbimin' => 'PretraÃ…Â¾i uslugu',
-        'Kerko sherbimin' => 'PretraÃ…Â¾i uslugu',
-        'Shiko video udhezuesit' => 'Pogledaj video uputstva',
-        'Shiko video udhezuesit' => 'Pogledaj video uputstva',
-        'Video udhezuesit jane placeholder ne kete prototip.' => 'Video uputstva su placeholder u ovom prototipu.',
-        'Video udhezuesit jane placeholder ne kete prototip.' => 'Video uputstva su placeholder u ovom prototipu.',
-        'Vemendje' => 'PaÃ…Â¾nja',
-        'Vemendje' => 'PaÃ…Â¾nja',
-        'Ju lutem te keni parasysh qe platforma eKosova mund te hapet vetem permes adreses zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.' => 'Imajte na umu da se platformi eKosova moÃ…Â¾e pristupiti samo preko zvaniÃ„Âne adrese https://ekosova.rks-gov.net i https://rks-gov.net.',
-        'Ju lutem te keni parasysh qe platforma eKosova mund te hapet vetem permes adreses zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.' => 'Imajte na umu da se platformi eKosova moÃ…Â¾e pristupiti samo preko zvaniÃ„Âne adrese https://ekosova.rks-gov.net i https://rks-gov.net.',
-        'Ãƒâ€¡do adrese, vegez apo URL tjeter qe nuk perfundon me rks-gov.net nuk i perket platformes eKosova dhe si e tille nuk jane sherbime qe ofrohen nga platforma shteterore.' => 'Svaka druga adresa, link ili URL koji se ne zavrÃ…Â¡ava sa rks-gov.net ne pripada platformi eKosova i nije usluga drÃ…Â¾avne platforme.',
-        'Cdo adrese, vegez apo URL tjeter qe nuk perfundon me rks-gov.net nuk i perket platformes eKosova dhe si e tille nuk jane sherbime qe ofrohen nga platforma shteterore.' => 'Svaka druga adresa, link ili URL koji se ne zavrÃ…Â¡ava sa rks-gov.net ne pripada platformi eKosova i nije usluga drÃ…Â¾avne platforme.',
-        'Familja' => 'Porodica',
-        'Kontributet' => 'Doprinosi',
-        'Grantet' => 'Grantovi',
-        'Komunalitet' => 'Komunalne usluge',
-        'Vizita ne platforme' => 'Posete platformi',
-        'Vizita ne platforme' => 'Posete platformi',
-        'Shfrytezime te sherbimit' => 'KoriÃ…Â¡Ã„â€¡enja usluge',
-        'Shfrytezime te sherbimit' => 'KoriÃ…Â¡Ã„â€¡enja usluge',
-        'Ky sherbim eshte placeholder ne kete prototip.' => 'Ova usluga je placeholder u ovom prototipu.',
-        'Ky sherbim eshte placeholder ne kete prototip.' => 'Ova usluga je placeholder u ovom prototipu.',
-        'Krijo llogarine tende' => 'Kreiraj svoj nalog',
-        'Krijo llogarine tende' => 'Kreiraj svoj nalog',
-        'Zgjedh sherbimin' => 'Izaberi uslugu',
-        'Zgjedh sherbimin' => 'Izaberi uslugu',
-        'Prano sherbimin' => 'Primi uslugu',
-        'Prano sherbimin' => 'Primi uslugu',
-        'Rreth portalit' => 'O portalu',
-        'Privatesia' => 'Privatnost',
-        'Privatesia' => 'Privatnost',
-        'Tani edhe ne:' => 'Sada i na:',
-        'Tani edhe ne:' => 'Sada i na:',
-        'Na ndiqni ne:' => 'Pratite nas:',
-        'Na ndiqni ne:' => 'Pratite nas:',
-        'Qendra e thirrjeve' => 'Pozivni centar',
-        'Projekti u mundesua nga' => 'Projekat omoguÃ„â€¡io',
-        'Projekti u mundesua nga' => 'Projekat omoguÃ„â€¡io',
-        'Agjencia e Shoqerise se Informacionit' => 'Agencija za informaciono druÃ…Â¡tvo',
-        'Agjencia e Shoqerise se Informacionit' => 'Agencija za informaciono druÃ…Â¡tvo',
-        'MPB, Qeveria e Kosoves' => 'MUP, Vlada Kosova',
-        'MPB, Qeveria e Kosoves' => 'MUP, Vlada Kosova',
-        'Sherbimet ne nivel qendror' => 'Usluge na centralnom nivou',
-        'Sherbimet ne nivel qendror' => 'Usluge na centralnom nivou',
-        'Sherbimet ne nivel lokal' => 'Usluge na lokalnom nivou',
-        'Sherbimet ne nivel lokal' => 'Usluge na lokalnom nivou',
-        'Te gjitha' => 'Sve',
-        'Te gjitha' => 'Sve',
-        'Ndrysho te dhenat personale' => 'Izmeni liÃ„Âne podatke',
-        'Te dhenat personale' => 'LiÃ„Âni podaci',
-        'Student' => 'Student',
-        'Banka' => 'Banka',
-        'Kurset e perfunduara' => 'ZavrÃ…Â¡eni kursevi',
-        'Zanatet e kryera' => 'ZavrÃ…Â¡eni zanati',
-        'Shkollimi i meparshem' => 'Prethodno obrazovanje',
-        'Ruaj ndryshimet' => 'SaÃ„Âuvaj izmene',
-        'Anulo' => 'OtkaÃ…Â¾i',
-        'Shto studime te reja' => 'Dodaj trenutne studije',
-        'Shto studime te kaluara' => 'Dodaj prethodne studije',
-        'Fshij' => 'ObriÃ…Â¡i',
-        'Nuk Ka' => 'Nema',
-        'Nuk eshte plotesuar' => 'Nije popunjeno',
-        'Kycu ne llogarine tuaj' => 'Prijavite se na svoj nalog',
-        'Fjalekalimi' => 'Lozinka',
-        'Mire se erdhet!' => 'DobrodoÃ…Â¡li!',
-        'Per te filluar procesin e regjistrimit plotesoni te dhenat ne vazhdim.' => 'Za poÃ„Âetak registracije popunite sledeÃ„â€¡e podatke.',
-        'Lloji i regjistrimit' => 'Tip registracije',
-        'Regjistrohu si Perfitues - Student' => 'Registruj se kao korisnik - Student',
-        'Regjistrohu si Ofrues' => 'Registruj se kao pruÃ…Â¾alac',
-        'Tipi i ofruesit' => 'Tip pruÃ…Â¾aoca',
-        'Institucion Arsimor' => 'Obrazovna institucija',
-        'Drejtori Komunale e Arsimit' => 'OpÃ…Â¡tinska direkcija za obrazovanje',
-        'Ofrues i Pavarur' => 'Nezavisni pruÃ…Â¾alac',
-        'Universiteti' => 'Univerzitet',
-        'Qyteti' => 'Grad',
-        'Numri i karteles' => 'Broj kartice',
-        'Data e skadences' => 'Datum isteka',
-        'Vazhdo' => 'Nastavi',
-        'Paneli i studentit' => 'Studentski panel',
-        'Shiko bursat aktive' => 'Pogledaj aktivne stipendije',
-        'Te dhenat e verifikuara' => 'Verifikovani podaci',
-        'Statusi studentor' => 'Studentski status',
-        'I verifikuar' => 'Verifikovan',
-        'Nota mesatare' => 'ProseÃ„Âna ocena',
-        'Statusi social' => 'Socijalni status',
-        'Statuset sociale' => 'Socijalni statusi',
-        'Femije veterani' => 'Dete veterana',
-        'Jetim' => 'SiroÃ„Âe',
-        'Ndihme sociale' => 'Socijalna pomoÃ„â€¡',
-        'Aplikimet e mia' => 'Moje prijave',
-        'Ende nuk keni aplikuar per burse.' => 'JoÃ…Â¡ niste aplicirali za stipendiju.',
-        'Ankohu per Gabim' => 'Prijavi greÃ…Â¡ku',
-        'Te dhenat e perdoruesit' => 'Podaci korisnika',
-        'Profili i studentit ruan te dhenat qe perdoren gjate aplikimit automatik.' => 'Studentski profil Ã„Âuva podatke koji se koriste tokom automatske prijave.',
-        'Ndrysho te dhenat' => 'Izmeni podatke',
-        'Apliko per burse' => 'Apliciraj za stipendiju',
-        'Familja e ngushte' => 'UÃ…Â¾a porodica',
-        'Nuk ka te dhena familjare te regjistruara.' => 'Nema registrovanih porodiÃ„Ânih podataka.',
-        'Dokumentet dhe te dhenat e ruajtura' => 'Dokumenti i saÃ„Âuvani podaci',
-        'Nuk ka dokumente te regjistruara.' => 'Nema registrovanih dokumenata.',
-        'Bursat aktive' => 'Aktivne stipendije',
-        'Apliko' => 'Apliciraj',
-        'Raporto problem' => 'Prijavi problem',
-        'Aplikimi automatik per burse studentore' => 'Automatska prijava za studentsku stipendiju',
-        'Aplikimi automatik per burse studentore' => 'Automatska prijava za studentsku stipendiju',
-        'Aplikimi per licence te karrieres ne mesimdhenie' => 'Prijava za licencu nastavniÃ„Âke karijere',
-        'Aplikimi per licence te karrieres ne mesimdhenie' => 'Prijava za licencu nastavniÃ„Âke karijere',
-        'Per qytetare' => 'Za graÃ„â€˜ane',
-        'Per qytetare' => 'Za graÃ„â€˜ane',
-        'Per biznese' => 'Za biznise',
-        'Per biznese' => 'Za biznise',
-        'Te gjitha sherbimet' => 'Sve usluge',
-        'Te gjitha sherbimet' => 'Sve usluge',
-        'Parashtroni kerkese per ndihme ose ankese' => 'Podnesite zahtev za pomoÃ„â€¡ ili Ã…Â¾albu',
-        'Emri dhe mbiemri' => 'Ime i prezime',
-        'Email adresa' => 'Email adresa',
-        "Si mund t'ju ndihmojme?" => 'Kako vam moÃ…Â¾emo pomoÃ„â€¡i?',
-        'Pershkruani kerkesen ose ankesen tuaj' => 'OpiÃ…Â¡ite svoj zahtev ili Ã…Â¾albu',
-        'Zgjedh sherbimin' => 'Izaberite uslugu',
-        'Shendetesia' => 'Zdravstvo',
-        'Tjeter' => 'Drugo',
-        'Nderpreje' => 'Prekini',
-        'Dergo' => 'PoÃ…Â¡alji',
-        'Kerkesa per ndihme eshte placeholder ne kete prototip.' => 'Zahtev za pomoÃ„â€¡ je placeholder u ovom prototipu.',
-        'FAQ eshte placeholder ne kete prototip.' => 'FAQ je placeholder u ovom prototipu.',
-        'Vegzat jane placeholder ne kete prototip.' => 'Linkovi su placeholder u ovom prototipu.',
-        'Webmail eshte placeholder ne kete prototip.' => 'Webmail je placeholder u ovom prototipu.',
-    ];
+    $sr = $en;
 
     return $lang === 'sr' ? $sr : $en;
 }
@@ -1643,7 +1492,7 @@ function rule_display_map(): array
         'martyr_child' => ['label' => 'Femije deshmori', 'document_section' => 'Vertetimi per Kategori te Luftes', 'human_description' => 'Femije deshmori'],
         'receives_social_assistance' => ['label' => 'Perfitues i ndihmes sociale', 'document_section' => 'Vertetimi per Ndihme Sociale', 'human_description' => 'Perfitues i ndihmes sociale'],
         'is_deficit_program' => ['label' => 'Drejtim deficitar', 'document_section' => 'Deshmi per Drejtime Deficitare', 'human_description' => 'Drejtim deficitar'],
-        'special_needs' => ['label' => 'Student me nevoja te veÃƒÂ§anta', 'document_section' => 'Vertetimi per Nevoja te VeÃƒÂ§anta', 'human_description' => 'Student me nevoja te veÃƒÂ§anta'],
+        'special_needs' => ['label' => 'Student me nevoja te vecanta', 'document_section' => 'Vertetimi per Nevoja te Vecanta', 'human_description' => 'Student me nevoja te vecanta'],
         'one_parent_missing' => ['label' => 'Pa njerin prind', 'document_section' => 'Certifikata e Vdekjes se Prinderve', 'human_description' => 'Pa njerin prind'],
         'two_parents_missing' => ['label' => 'Pa dy prinder', 'document_section' => 'Certifikata e Vdekjes se Prinderve', 'human_description' => 'Pa dy prinder'],
         'is_final_year' => ['label' => 'Student i vitit te fundit', 'document_section' => 'Vertetimi i Studentit Aktiv', 'human_description' => 'Student i vitit te fundit'],
@@ -2331,9 +2180,9 @@ function page_home(): void
             <div class="portal-tools">
                 <label class="portal-search" aria-label="Kerko sherbimin">
                     <input type="search" placeholder="Kerko sherbimin">
-                    <span>Ã¢Å’â€¢</span>
+                    <span>&#8981;</span>
                 </label>
-                <a class="video-link placeholder" href="<?= BASE_URL ?>/index.php?page=home" data-placeholder="Video udhezuesit jane placeholder ne kete prototip.">Shiko video udhezuesit <span>Ã¢â€“Â¶</span></a>
+                <a class="video-link placeholder" href="<?= BASE_URL ?>/index.php?page=home" data-placeholder="Video udhezuesit jane placeholder ne kete prototip.">Shiko video udhezuesit <span>&#9654;</span></a>
             </div>
         </div>
 
@@ -2342,21 +2191,21 @@ function page_home(): void
             <div>
                 <strong>Vemendje</strong>
                 <p>Ju lutem te keni parasysh qe platforma eKosova mund te hapet vetem permes adreses zyrtare https://ekosova.rks-gov.net dhe https://rks-gov.net.</p>
-                <p>Ãƒâ€¡do adrese, vegez apo URL tjeter qe nuk perfundon me rks-gov.net nuk i perket platformes eKosova dhe si e tille nuk jane sherbime qe ofrohen nga platforma shteterore.</p>
+                <p>Cdo adrese, vegez apo URL tjeter qe nuk perfundon me rks-gov.net nuk i perket platformes eKosova dhe si e tille nuk jane sherbime qe ofrohen nga platforma shteterore.</p>
             </div>
         </div>
 
         <div class="portal-stats">
             <?php foreach ([
-                ['Familja', '991.9K', 'family', 'Ã°Å¸â€˜Âª', 'home'],
-                ['Arsimi', '849.4K', 'education', 'Ã¢â€“Â°', 'education'],
-                ['Kontributet', '217.4K', 'contrib', 'Ã¢â€”â€', 'home'],
-                ['Grantet', '424.9K', 'grants', 'Ã¢â€“Â£', 'home'],
-                ['Komunalitet', '389.7K', 'municipal', 'Ã¢â€“Â¤', 'home'],
-                ['Vizita ne platforme', '1.5B', 'visits', 'Ã¢â€”Â', 'home'],
+                ['Familja', '991.9K', 'family', 'home'],
+                ['Arsimi', '849.4K', 'education', 'education'],
+                ['Kontributet', '217.4K', 'contrib', 'home'],
+                ['Grantet', '424.9K', 'grants', 'home'],
+                ['Komunalitet', '389.7K', 'municipal', 'home'],
+                ['Vizita ne platforme', '1.5B', 'visits', 'home'],
             ] as $cat): ?>
-                <a class="stat-card <?= e($cat[2]) ?> <?= $cat[4] === 'home' ? 'placeholder' : '' ?>" href="<?= BASE_URL ?>/index.php?page=<?= e($cat[4]) ?>" data-placeholder="Ky sherbim eshte placeholder ne kete prototip.">
-                    <span class="stat-icon"><?= e($cat[3]) ?></span>
+                <a class="stat-card <?= e($cat[2]) ?> <?= $cat[3] === 'home' ? 'placeholder' : '' ?>" href="<?= BASE_URL ?>/index.php?page=<?= e($cat[3]) ?>" data-placeholder="Ky sherbim eshte placeholder ne kete prototip.">
+                    <span class="stat-icon <?= e($cat[2]) ?>-icon" aria-hidden="true"></span>
                     <strong><?= e($cat[1]) ?></strong>
                     <small><?= $cat[0] === 'Vizita ne platforme' ? 'Vizita ne platforme' : 'Shfrytezime te sherbimit "' . e($cat[0]) . '"' ?></small>
                 </a>
@@ -2375,7 +2224,6 @@ function page_home(): void
     </section>
     <?php
 }
-
 function page_home_legacy(): void
 {
     ?>
@@ -2397,7 +2245,7 @@ function page_home_legacy(): void
                 ['Kontribute', '217.4K', 'slate'],
             ] as $cat): ?>
                 <a class="stat-card <?= e($cat[2]) ?>" href="<?= BASE_URL ?>/index.php?page=services">
-                    <span class="icon">Ã¢Å’â€š</span>
+                    <span class="icon">&#8962;</span>
                     <strong><?= e($cat[1]) ?></strong>
                     <small>Shfrytezime te sherbimit "<?= e($cat[0]) ?>"</small>
                 </a>
@@ -2411,7 +2259,6 @@ function page_home_legacy(): void
     </section>
     <?php
 }
-
 function page_login(): void
 {
     ?>
@@ -2928,7 +2775,7 @@ function page_help(): void
                 </label>
             </div>
             <div class="captcha-placeholder" aria-label="Captcha placeholder">
-                <span>Ã¢Å“â€œ</span>
+                <span>&#10003;</span>
                 <strong>Success!</strong>
                 <b>Cloudflare</b>
             </div>
@@ -2944,28 +2791,28 @@ function page_help(): void
 function page_info(): void
 {
     $items = [
-        ['Sherbimet ne nivel qendror', 'Ã¢â€“Â¥'],
-        ['Sherbimet ne nivel lokal', 'Ã¢â€“Â¦'],
-        ['Benefitet dhe asistenca', 'Ã¢â„¢Â§'],
-        ['Levizja dhe komunikimi', 'Ã¢â€ Â»'],
-        ['Familja', 'Ã¢â„¢Å¸'],
-        ['Siguria', 'Ã¢â€”â€ '],
-        ['Shendetesia', 'Ã¢â„¢Â¡'],
-        ['Ambienti dhe natyra', 'Ã¢â„¢Â '],
-        ['Dokumentet', 'Ã¢Å“Å½'],
-        ['Diaspora', 'Ã¢â€”â€°'],
-        ['Puna dhe biznesi', 'Ã¢â€“Â°'],
-        ['Udhezuesit', 'Ã¢â€œËœ'],
+        'Sherbimet ne nivel qendror',
+        'Sherbimet ne nivel lokal',
+        'Benefitet dhe asistenca',
+        'Levizja dhe komunikimi',
+        'Familja',
+        'Siguria',
+        'Shendetesia',
+        'Ambienti dhe natyra',
+        'Dokumentet',
+        'Diaspora',
+        'Puna dhe biznesi',
+        'Udhezuesit',
     ];
     ?>
     <section class="info-page">
         <div class="info-head">
             <h1>Informata</h1>
-            <button class="info-filter placeholder" type="button" data-placeholder="Filtrat jane placeholder ne kete prototip."><span>Ã¢ËœÂ·</span> Te gjitha <b>Ã¢Å’â€ž</b></button>
+            <button class="info-filter placeholder" type="button" data-placeholder="Filtrat jane placeholder ne kete prototip."><span>&#9783;</span> Te gjitha <b>&#8964;</b></button>
         </div>
 
         <div class="info-grid">
-            <?php foreach ($items as [$title, $icon]): ?>
+            <?php foreach ($items as $title): ?>
                 <a class="info-tile placeholder" href="<?= BASE_URL ?>/index.php?page=info" data-placeholder="Kjo informate eshte placeholder ne kete prototip.">
                     <span class="info-icon" aria-hidden="true"></span>
                     <strong><?= e($title) ?></strong>
@@ -2975,7 +2822,6 @@ function page_info(): void
     </section>
     <?php
 }
-
 function page_scholarships(): void
 {
     require_role(['student', 'admin']);
@@ -3256,6 +3102,28 @@ function analytics_data(): array
     $ekosovaVisits = 0;
     $traditionalDocuments = 6;
     $ekosovaDocuments = 0;
+    $traditionalManualChecks = 5;
+    $ekosovaManualChecks = 0;
+    $traditionalErrorRate = 20;
+    $ekosovaErrorRate = 0;
+    $objectiveWeights = ['w1' => 0.30, 'w2' => 0.20, 'w3' => 0.20, 'w4' => 0.15, 'w5' => 0.10, 'w6' => 0.05];
+    $traditionalObjectiveInputs = [
+        'T' => $traditionalSeconds / 60,
+        'H' => $traditionalSteps,
+        'D' => $traditionalDocuments,
+        'V' => $traditionalVisits,
+        'M' => $traditionalManualChecks,
+        'G' => $traditionalErrorRate,
+    ];
+    $ekosovaObjectiveInputs = [
+        'T' => $ekosovaSeconds / 60,
+        'H' => $ekosovaSteps,
+        'D' => $ekosovaDocuments,
+        'V' => $ekosovaVisits,
+        'M' => $ekosovaManualChecks,
+        'G' => $ekosovaErrorRate,
+    ];
+    $objective = analytics_objective($traditionalObjectiveInputs, $ekosovaObjectiveInputs, $objectiveWeights);
 
     return [
         'metrics' => [
@@ -3298,20 +3166,130 @@ function analytics_data(): array
         'counts' => analytics_counts(),
         'optimization_sources' => [
             'Eliminimi i dokumenteve fizike/PDF.',
+            'Eliminimi i vizitave fizike.',
             'Zevendesimi i dokumenteve me seksione te profilit.',
             'Matching automatik student-burse.',
             'Shfaqja vetem e bursave te pershtatshme.',
             'Eliminimi i refuzimit manual.',
             'Aplikimi me nje klikim.',
+            'Ruajtja e te dhenave ne profil.',
+            'Verifikimi institucional i simuluar.',
+            'Reduktimi i gabimeve nga dokumentet e paplota.',
+            'Reduktimi i ngarkeses se komisionit.',
             'Fitimi/simulimi pas 3 sekondash.',
         ],
         'comparison' => [
             ['Procesi', 'Procesi tradicional', 'Procesi me EKosova+'],
             ['Pikat e kontaktit', '5 institucione fizike', '1 platforme'],
-            ['Hapat', '10 hapa', '2-3 hapa'],
-            ['Dokumentet', '6 dokumente', '0 dokumente fizike'],
+            ['Hapat procedurale', '10', '2 ose 3'],
+            ['Dokumentet fizike/PDF', '6', '0'],
             ['Koha', '4 dite', '3 sekonda pas klikimit'],
+            ['Verifikimet manuale', '5', '0'],
+            ['Gabimet nga dokumentet e paplota', 'mesatare e simuluar 20%', '0% ose shume afer 0'],
+            ['Rreziku i aplikimit ne burse te gabuar', 'i larte, sepse studenti i lexon kriteret vete', 'i ulet, sepse sistemi shfaq vetem bursat e pershtatshme'],
+            ['Nevoja per printim', 'po', 'jo'],
+            ['Nevoja per dorezim fizik', 'po', 'jo'],
         ],
+        'objective' => $objective,
+        'database' => analytics_database_report(),
+        'document_replacements' => analytics_document_replacements(),
+        'stability' => [
+            ['label' => 'Rreziku i gabimit manual', 'traditional' => 75, 'ekosova' => 10],
+            ['label' => 'Rreziku i dokumenteve te paplota', 'traditional' => 70, 'ekosova' => 5],
+            ['label' => 'Rreziku i aplikimit te gabuar', 'traditional' => 80, 'ekosova' => 8],
+            ['label' => 'Rreziku i voneses', 'traditional' => 85, 'ekosova' => 5],
+        ],
+        'charts' => [
+            'process' => [
+                'labels' => ['Hapat', 'Dokumentet', 'Vizitat', 'Verifikimet manuale', 'Koha'],
+                'traditional' => [10, 6, 5, 5, 100],
+                'ekosova' => [2.5, 0, 0, 0, 0.001],
+            ],
+            'radar' => [
+                'labels' => ['Shpejtesia', 'Thjeshtesia', 'Automatizimi', 'Saktesia', 'Transparenca', 'Perdorimi i resurseve'],
+                'traditional' => [20, 30, 10, 60, 40, 35],
+                'ekosova' => [95, 90, 95, 90, 85, 90],
+            ],
+            'documents' => [
+                'labels' => ['Dokumente te eliminuara', 'Te dhena te zevendesuara me profil digjital'],
+                'values' => [6, 6],
+            ],
+            'time' => [
+                'labels' => ['Mbledhja e dokumenteve', 'Dorezimi', 'Verifikimi', 'Vendimi', 'Njoftimi'],
+                'traditional' => [2880, 240, 1440, 1080, 120],
+                'ekosova' => [0, 0, 0.03, 0.015, 0.005],
+            ],
+        ],
+    ];
+}
+
+function analytics_objective(array $traditional, array $ekosova, array $weights): array
+{
+    $zTraditional = ($weights['w1'] * $traditional['T'])
+        + ($weights['w2'] * $traditional['H'])
+        + ($weights['w3'] * $traditional['D'])
+        + ($weights['w4'] * $traditional['V'])
+        + ($weights['w5'] * $traditional['M'])
+        + ($weights['w6'] * $traditional['G']);
+    $zEkosova = ($weights['w1'] * $ekosova['T'])
+        + ($weights['w2'] * $ekosova['H'])
+        + ($weights['w3'] * $ekosova['D'])
+        + ($weights['w4'] * $ekosova['V'])
+        + ($weights['w5'] * $ekosova['M'])
+        + ($weights['w6'] * $ekosova['G']);
+
+    return [
+        'weights' => $weights,
+        'traditional_inputs' => $traditional,
+        'ekosova_inputs' => $ekosova,
+        'z_traditional' => $zTraditional,
+        'z_ekosova' => $zEkosova,
+        'optimization_score' => percentage_reduction($zTraditional, $zEkosova),
+    ];
+}
+
+function analytics_database_report(): array
+{
+    return [
+        'applications_per_scholarship' => analytics_rows('SELECT s.title label, COUNT(a.id) total FROM scholarships s LEFT JOIN applications a ON a.scholarship_id=s.id GROUP BY s.id, s.title ORDER BY total DESC, s.title ASC LIMIT 10'),
+        'applications_per_municipality' => analytics_rows('SELECT COALESCE(NULLIF(sp.city, ""), "Pa qytet") label, COUNT(a.id) total FROM applications a JOIN student_profiles sp ON sp.user_id=a.student_id GROUP BY label ORDER BY total DESC LIMIT 10'),
+        'applications_per_provider_category' => analytics_rows('SELECT COALESCE(NULLIF(s.category, ""), "Pa kategori") label, COUNT(a.id) total FROM applications a JOIN scholarships s ON s.id=a.scholarship_id GROUP BY label ORDER BY total DESC LIMIT 10'),
+        'completed_profile_sections' => analytics_scalar('SELECT COUNT(*) FROM student_profiles WHERE personal_number<>"" AND city<>"" AND average_grade IS NOT NULL AND bank_name<>"" AND bank_account_number<>""'),
+        'missing_profile_sections' => analytics_scalar('SELECT COUNT(*) FROM student_profiles WHERE personal_number="" OR city="" OR average_grade IS NULL OR bank_name="" OR bank_account_number=""'),
+    ];
+}
+
+function analytics_rows(string $sql, array $params = []): array
+{
+    try {
+        $stmt = db()->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll() ?: [];
+    } catch (Throwable $e) {
+        return [];
+    }
+}
+
+function analytics_scalar(string $sql, array $params = []): int
+{
+    try {
+        $stmt = db()->prepare($sql);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn();
+    } catch (Throwable $e) {
+        return 0;
+    }
+}
+
+function analytics_document_replacements(): array
+{
+    return [
+        ['ID / Leternjoftimi', 'Te dhenat personale', 'Agjencia e Regjistrimit Civil', 'Digjitalizuar'],
+        ['Certifikata e Vendbanimit', 'Vendbanimi', 'Komuna perkatese', 'Digjitalizuar'],
+        ['Certifikata e Notave', 'Te dhenat akademike', 'Universiteti perkates', 'Digjitalizuar'],
+        ['Konfirmimi Bankar', 'Banka', 'Banka perkatese', 'Digjitalizuar'],
+        ['Vertetimi nga ATK', 'Punesimi', 'Administrata Tatimore e Kosoves', 'Digjitalizuar'],
+        ['Vertetimi per Ndihme Sociale', 'Statusi social', 'Qendra per Pune Sociale', 'Digjitalizuar'],
     ];
 }
 
@@ -3405,6 +3383,9 @@ function render_analytics_summary(array $analytics): void
 function render_analytics_page(array $analytics): void
 {
     $counts = $analytics['counts'];
+    $objective = $analytics['objective'];
+    $database = $analytics['database'];
+    $chartData = $analytics['charts'];
     ?>
     <section class="page-head">
         <div>
@@ -3441,6 +3422,81 @@ function render_analytics_page(array $analytics): void
         </div>
     </section>
 
+    <section class="panel analytics-theory-card">
+        <h2>Permbledhje teorike e optimizimit</h2>
+        <p>Optimizimi ne kete sistem matet si permiresim i procesit tradicional te aplikimit per burse, duke minimizuar kohen, numrin e hapave, dokumentet fizike, vizitat fizike, verifikimet manuale dhe gabimet administrative. Sistemi EKosova+ zevendeson dokumentet zyrtare me seksione te profilit te verifikuara nga institucionet perkatese dhe shfaq vetem bursat per te cilat studenti eshte kompetent.</p>
+    </section>
+
+    <section class="analytics-layout objective-layout">
+        <article class="panel objective-panel">
+            <h2>Funksioni objektiv</h2>
+            <code>Z = w1*T + w2*H + w3*D + w4*V + w5*M + w6*G</code>
+            <p class="muted-text">Qellimi: <b>min Z</b></p>
+            <dl class="objective-list">
+                <dt>T</dt><dd>koha totale e aplikimit</dd>
+                <dt>H</dt><dd>numri i hapave procedurale</dd>
+                <dt>D</dt><dd>numri i dokumenteve fizike/PDF</dd>
+                <dt>V</dt><dd>numri i vizitave fizike</dd>
+                <dt>M</dt><dd>numri i verifikimeve manuale</dd>
+                <dt>G</dt><dd>numri i gabimeve/mosperputhjeve</dd>
+            </dl>
+            <div class="objective-weights">
+                <?php foreach ($objective['weights'] as $key => $weight): ?>
+                    <span><?= e($key) ?> = <?= e(number_format((float) $weight, 2)) ?></span>
+                <?php endforeach; ?>
+            </div>
+        </article>
+        <article class="panel objective-result-panel">
+            <h2>Rezultati i optimizimit total</h2>
+            <div class="analytics-mini-grid count-grid">
+                <article><span><?= e(number_format((float) $objective['z_traditional'], 2)) ?></span><small>Z tradicional</small></article>
+                <article><span><?= e(number_format((float) $objective['z_ekosova'], 2)) ?></span><small>Z EKosova+</small></article>
+                <article><span><?= e(percent_label((float) $objective['optimization_score'])) ?></span><small>Optimization score</small></article>
+            </div>
+            <div class="objective-breakdown">
+                <?php foreach ([
+                    ['Koha', 'T', 'w1'],
+                    ['Hapat', 'H', 'w2'],
+                    ['Dokumentet', 'D', 'w3'],
+                    ['Vizitat', 'V', 'w4'],
+                    ['Verifikimet', 'M', 'w5'],
+                    ['Gabimet', 'G', 'w6'],
+                ] as [$label, $inputKey, $weightKey]): ?>
+                    <?php
+                    $traditionalImpact = (float) $objective['traditional_inputs'][$inputKey] * (float) $objective['weights'][$weightKey];
+                    $ekosovaImpact = (float) $objective['ekosova_inputs'][$inputKey] * (float) $objective['weights'][$weightKey];
+                    $reduction = percentage_reduction($traditionalImpact, $ekosovaImpact);
+                    ?>
+                    <div>
+                        <span><?= e($label) ?></span>
+                        <strong><?= e(percent_label($reduction)) ?></strong>
+                        <div class="progress-bar"><span style="width: <?= e((string) round($reduction, 1)) ?>%"></span></div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <p class="muted-text">Optimization_score = ((Z_tradicional - Z_EKosova) / Z_tradicional) * 100.</p>
+        </article>
+    </section>
+
+    <section class="analytics-chart-grid">
+        <article class="panel chart-panel">
+            <h2>Procesi aktual/tradicional vs EKosova+</h2>
+            <canvas id="processBarChart"></canvas>
+        </article>
+        <article class="panel chart-panel">
+            <h2>Profili i efikasitetit</h2>
+            <canvas id="efficiencyRadarChart"></canvas>
+        </article>
+        <article class="panel chart-panel">
+            <h2>Dokumentet</h2>
+            <canvas id="documentsDoughnutChart"></canvas>
+        </article>
+        <article class="panel chart-panel">
+            <h2>Reduktimi i kohes sipas fazave</h2>
+            <canvas id="timeLineChart"></canvas>
+        </article>
+    </section>
+
     <section class="analytics-layout">
         <article class="panel">
             <h2>Aplikimet dhe ankesat</h2>
@@ -3449,6 +3505,7 @@ function render_analytics_page(array $analytics): void
                 <article><span><?= (int) $counts['total_applications'] ?></span><small>Total aplikime</small></article>
                 <article><span><?= (int) $counts['won_applications'] ?></span><small>Te fituara</small></article>
                 <article><span><?= (int) $counts['total_complaints'] ?></span><small>Ankesa</small></article>
+                <article><span><?= (int) $database['completed_profile_sections'] ?></span><small>Profile te kompletuara</small></article>
             </div>
         </article>
 
@@ -3462,6 +3519,31 @@ function render_analytics_page(array $analytics): void
                         <b><?= e(percent_label((float) $metric['percent'])) ?></b>
                     </div>
                 <?php endforeach; ?>
+            </div>
+        </article>
+    </section>
+
+    <section class="analytics-layout">
+        <article class="panel">
+            <h2>Aplikime sipas burses</h2>
+            <?php render_analytics_rows_table($database['applications_per_scholarship'], 'Bursa'); ?>
+        </article>
+        <article class="panel">
+            <h2>Aplikime sipas komunes</h2>
+            <?php render_analytics_rows_table($database['applications_per_municipality'], 'Komuna'); ?>
+        </article>
+    </section>
+
+    <section class="analytics-layout">
+        <article class="panel">
+            <h2>Aplikime sipas kategorise se ofruesit</h2>
+            <?php render_analytics_rows_table($database['applications_per_provider_category'], 'Kategoria'); ?>
+        </article>
+        <article class="panel">
+            <h2>Gjendja e profileve</h2>
+            <div class="analytics-mini-grid count-grid">
+                <article><span><?= (int) $database['completed_profile_sections'] ?></span><small>Me seksione kryesore te plotesuara</small></article>
+                <article><span><?= (int) $database['missing_profile_sections'] ?></span><small>Me seksione qe mungojne</small></article>
             </div>
         </article>
     </section>
@@ -3487,6 +3569,128 @@ function render_analytics_page(array $analytics): void
             </tbody>
         </table>
     </section>
+
+    <section class="panel">
+        <h2>Dokumente te zevendesuara nga profili</h2>
+        <table class="comparison-table">
+            <thead><tr><th>Dokumenti tradicional</th><th>Seksioni ne EKosova+</th><th>Institucioni autentifikues</th><th>Statusi</th></tr></thead>
+            <tbody>
+                <?php foreach ($analytics['document_replacements'] as $row): ?>
+                    <tr>
+                        <td><?= e($row[0]) ?></td>
+                        <td><?= e($row[1]) ?></td>
+                        <td><?= e($row[2]) ?></td>
+                        <td><span class="status approved"><?= e($row[3]) ?></span></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="analytics-layout">
+        <article class="panel">
+            <h2>Efikasiteti algoritmik</h2>
+            <p>Njesoj si ne krahasimin Bubble Sort vs QuickSort, ku matet koha e ekzekutimit per te vleresuar efikasitetin, ne kete projekt krahasohet procesi tradicional me procesin EKosova+. Procesi tradicional ka shume hapa manuale, ndersa EKosova+ perdor matching automatik dhe verifikim te strukturuar nga profili.</p>
+            <table class="comparison-table">
+                <tbody>
+                    <tr><td>Procesi tradicional</td><td>algoritem manual me shume hapa</td></tr>
+                    <tr><td>EKosova+</td><td>algoritem i optimizuar me filtrim paraprak</td></tr>
+                    <tr><td>Kompleksitet procedural tradicional</td><td>O(n * m), ku n = numri i bursave dhe m = numri i dokumenteve/kritereve</td></tr>
+                    <tr><td>Kompleksitet procedural EKosova+</td><td>O(n), sepse sistemi kontrollon automatikisht kriteret</td></tr>
+                </tbody>
+            </table>
+        </article>
+        <article class="panel">
+            <h2>Stabiliteti i procesit</h2>
+            <p class="muted-text">Procesi tradicional eshte me pak stabil sepse varet nga dokumente te paplota, vonesa, gabime njerezore dhe interpretim manual. EKosova+ eshte me stabil sepse kriteret kontrollohen ne menyre uniforme dhe te dhenat merren nga profili i verifikuar.</p>
+            <div class="stability-list">
+                <?php foreach ($analytics['stability'] as $risk): ?>
+                    <div class="stability-row">
+                        <strong><?= e($risk['label']) ?></strong>
+                        <span>Tradicional <?= (int) $risk['traditional'] ?>%</span>
+                        <div class="progress-bar danger"><span style="width: <?= (int) $risk['traditional'] ?>%"></span></div>
+                        <span>EKosova+ <?= (int) $risk['ekosova'] ?>%</span>
+                        <div class="progress-bar"><span style="width: <?= (int) $risk['ekosova'] ?>%"></span></div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </article>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    (() => {
+        const charts = <?= json_encode($chartData, JSON_UNESCAPED_SLASHES) ?>;
+        if (!window.Chart || !charts) return;
+        const commonOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } };
+        new Chart(document.getElementById('processBarChart'), {
+            type: 'bar',
+            data: { labels: charts.process.labels, datasets: [
+                { label: 'Procesi aktual/tradicional', data: charts.process.traditional, backgroundColor: '#d99a12', maxBarThickness: 30 },
+                { label: 'EKosova+', data: charts.process.ekosova, backgroundColor: '#155fa8', maxBarThickness: 30 }
+            ]},
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: { display: true, text: 'Shkalle krahasuese relative' }
+                    }
+                },
+                plugins: {
+                    ...commonOptions.plugins,
+                    tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${Number(ctx.raw).toFixed(3)} njesi` } }
+                }
+            }
+        });
+        new Chart(document.getElementById('efficiencyRadarChart'), {
+            type: 'radar',
+            data: { labels: charts.radar.labels, datasets: [
+                { label: 'Procesi tradicional', data: charts.radar.traditional, borderColor: '#d99a12', backgroundColor: 'rgba(217,154,18,.16)' },
+                { label: 'EKosova+', data: charts.radar.ekosova, borderColor: '#155fa8', backgroundColor: 'rgba(21,95,168,.16)' }
+            ]},
+            options: { ...commonOptions, scales: { r: { suggestedMin: 0, suggestedMax: 100 } } }
+        });
+        new Chart(document.getElementById('documentsDoughnutChart'), {
+            type: 'doughnut',
+            data: { labels: charts.documents.labels, datasets: [{ data: charts.documents.values, backgroundColor: ['#1f9d55', '#155fa8'] }] },
+            options: commonOptions
+        });
+        new Chart(document.getElementById('timeLineChart'), {
+            type: 'line',
+            data: { labels: charts.time.labels, datasets: [
+                { label: 'Procesi tradicional', data: charts.time.traditional, borderColor: '#d99a12', tension: .3 },
+                { label: 'EKosova+', data: charts.time.ekosova, borderColor: '#155fa8', tension: .3 }
+            ]},
+            options: commonOptions
+        });
+    })();
+    </script>
+    <?php
+}
+
+function render_analytics_rows_table(array $rows, string $label): void
+{
+    if (!$rows) {
+        echo '<p class="muted-text">Nuk ka te dhena.</p>';
+        return;
+    }
+    $max = max(array_map(fn($row) => (int) ($row['total'] ?? 0), $rows)) ?: 1;
+    ?>
+    <table class="comparison-table">
+        <thead><tr><th><?= e($label) ?></th><th>Total</th><th>Grafik</th></tr></thead>
+        <tbody>
+            <?php foreach ($rows as $row): ?>
+                <?php $total = (int) ($row['total'] ?? 0); ?>
+                <tr>
+                    <td><?= e($row['label'] ?? '-') ?></td>
+                    <td><?= $total ?></td>
+                    <td><div class="table-bar"><span style="width: <?= e((string) (($total / $max) * 100)) ?>%"></span></div></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
     <?php
 }
 
@@ -3496,7 +3700,7 @@ function page_complaint(): void
     $applicationId = (int) ($_GET['application_id'] ?? 0);
     $providers = [
         'Burse komunale' => ['Komuna e Kamenices', 'Komuna e Gjilanit', 'Komuna e Vitise', 'Komuna e Ferizajit'],
-        'Burse universitare' => ['Universiteti Ã¢â‚¬Å“Kadri ZekaÃ¢â‚¬Â', 'Universiteti i Prishtines', 'Universiteti Ã¢â‚¬Å“Haxhi ZekaÃ¢â‚¬Â'],
+        'Burse universitare' => ['Universiteti "Kadri Zeka"', 'Universiteti i Prishtines', 'Universiteti "Haxhi Zeka"'],
         'Burse humanitare nga OJQ' => ['OJQ TOKA', 'AMIK', 'VILDANA Foundation'],
     ];
     ?>
@@ -3573,7 +3777,7 @@ function render_structured_student_documents(array $profile, string $firstName, 
                                 <span class="document-required-note"><?= e($section['required_note']) ?></span>
                             <?php endif; ?>
                         </div>
-                        <button class="section-edit-button" type="button" aria-label="Ndrysho <?= e($section['title']) ?>" title="Ndrysho">Ã¢Å“Å½</button>
+                        <button class="section-edit-button" type="button" aria-label="Ndrysho <?= e($section['title']) ?>" title="Ndrysho"></button>
                     </div>
                     <div class="document-verification-line">
                         <span class="badge ok">Verifikuar</span>
@@ -4149,7 +4353,7 @@ function render_section_header(string $title, ?string $note = null): void
     ?>
     <div class="section-card-head">
         <h2><?= e(t($title)) ?><?= $note ? ' <span>(' . e(t($note)) . ')</span>' : '' ?></h2>
-        <button class="section-edit-button" type="button" aria-label="<?= e(t('edit')) ?> <?= e(t($title)) ?>">Ã¢Å“Å½</button>
+        <button class="section-edit-button" type="button" aria-label="<?= e(t('edit')) ?> <?= e(t($title)) ?>"></button>
     </div>
     <?php
 }
@@ -4199,7 +4403,7 @@ function criteria_text(array $s): string
     if ($s['requires_veteran_child']) $items[] = 'Femije veterani';
     if ($s['requires_orphan']) $items[] = 'Jetim';
     if ($s['requires_social_assistance']) $items[] = 'Ndihme sociale';
-    return $items ? implode(' Ã‚Â· ', $items) : 'Pa kritere shtese';
+    return $items ? implode(' - ', $items) : 'Pa kritere shtese';
 }
 
 function profile_field(string $label, ?string $value, bool $wide = false): void
